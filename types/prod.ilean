@@ -1,0 +1,268 @@
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|176|13|prod.ap_prod_functor|definition|Π {A} {A'} {B} {B'} {u v} f g p q, eq (ap (prod.prod_functor f g) (prod.prod_eq p q)) (prod.prod_eq (ap f p) (ap g q))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|106|13|prod.eq_pr1_concat|definition|Π {A B} {u v w} p q, eq (prod.eq_pr1 (concat p q)) (concat (prod.eq_pr1 p) (prod.eq_pr1 q))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|201|13|prod.is_equiv_prod_functor|definition|Π {A} {A'} {B} {B'} f g [H] [H], is_equiv (prod.prod_functor f g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|19|23|prod.eta|protected|Π {A} {B} u, eq (mk (pr₁ u) (pr₂ u)) u
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|57|13|prod.prod_eq_unc|definition|Π {A} {B} {u v}, prod (eq (pr1 u) (pr1 v)) (eq (pr2 u) (pr2 v)) → eq u v
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|130|13|prod.prod_transport|definition|Π {A} {P} {Q} {a a'} p u, eq (transport _ p u) (mk (transport _ p (pr1 u)) (transport _ p (pr2 u)))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|93|13|prod.pair_eq_eta|definition|Π {A B} {u v} p, eq (prod.pair_eq (prod.eq_pr1 p) (prod.eq_pr2 p)) (concat (concat (prod.eta u) p) [choice (inv (prod.eta v)) (inverse (prod.eta v))])
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|209|13|prod.prod_equiv_prod_of_is_equiv|definition|Π {A} {A'} {B} {B'} f g [H] [H], equiv (prod A B) (prod A' B')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|276|13|prod.imp_imp_equiv_prod_imp|definition|Π A B C, equiv (A → B → C) (prod A B → C)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|73|13|prod.is_equiv_prod_eq|definition|Π {A} {B} u v, is_equiv prod.prod_eq_unc
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|279|13|prod.prod_corec_unc|definition|Π {A} {P Q}, prod (Π a, P a) (Π a, Q a) → (Π a, prod (P a) (Q a))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|337|13|prod.ptprod|definition|Π {n}, ptrunctype n → ptrunctype n → ptrunctype n
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|64|13|prod.prod_eq_unc_pr1|definition|Π {A} {B} {u v} pq, eq (prod.eq_pr1 (prod.prod_eq_unc pq)) (pr1 pq)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|185|13|prod.ap_binary|definition|Π {A} {B} {C} {a a'} {b b'} m p q, eq (ap (λ z, m (pr1 z) (pr2 z)) (prod.prod_eq p q)) (concat (ap (m a) q) (ap (λ x, m x b') p))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|60|13|prod.pair_prod_eq_unc|definition|Π {A} {B} {u v} pq, eq (mk (prod.eq_pr1 (prod.prod_eq_unc pq)) (prod.eq_pr2 (prod.prod_eq_unc pq))) pq
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|190|13|prod.ap_prod_elim|definition|Π {A B C} {a a'} {b b'} m p q, eq (ap (prod.rec m) (prod.prod_eq p q)) (concat (ap (m a) q) (ap (λ x, m x b') p))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|294|13|prod.imp_prod_imp_equiv_imp_prod|definition|Π A B C, equiv (prod (A → B) (A → C)) (A → prod B C)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|50|13|prod.prod_eq_pr2|definition|Π {A} {B} {u v} p q, eq (prod.eq_pr2 (prod.prod_eq p q)) q
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|70|13|prod.prod_eq_unc_eta|definition|Π {A} {B} {u v} p, eq (prod.prod_eq_unc (mk (prod.eq_pr1 p) (prod.eq_pr2 p))) p
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|152|13|prod.prod_pathover_equiv|definition|Π {A} {B C} {a a'} p x x', equiv (pathover _ x p x') (prod (pathover _ (pr1 x) p (pr1 x')) (pathover _ (pr2 x) p (pr2 x')))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|290|13|prod.equiv_prod_corec|definition|Π {A} P Q, equiv (prod (Π a, P a) (Π a, Q a)) (Π a, prod (P a) (Q a))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|25|13|prod.prod_eq|definition|Π {A} {B} {u v}, eq (pr1 u) (pr1 v) → eq (pr2 u) (pr2 v) → eq u v
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|87|13|prod.ap_prod_mk_left|definition|Π {A} {B} {a a'} {b} p, eq (ap (λ a, mk a b) p) (prod.prod_eq p idp)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|253|13|prod.prod_unit_equiv|definition|Π A, equiv (prod A unit) A
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|247|13|prod.prod_contr_equiv|definition|Π A B [H], equiv (prod A B) A
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|195|13|prod.ap_prod_elim_idp|definition|Π {A B C} {a a'} m p b, eq (ap (prod.rec m) (prod.prod_eq p idp)) (ap (λ x, m x b) p)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|266|13|prod.is_equiv_prod_rec|definition|Π {A} {B} P, is_equiv prod.rec
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|140|13|prod.etao|definition|Π {A} {P} {Q} {a a'} p bc, pathover _ bc p (mk (transport _ p (pr1 bc)) (transport _ p (pr2 bc)))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|326|13|prod.ppr1|definition|Π {A B}, pmap (prod.pprod A B) A
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|117|13|prod.prod_eq_inv|definition|Π {A} {B} {a a'} {b b'} p q, eq [choice (inv (prod.prod_eq p q)) (inverse (prod.prod_eq p q))] (prod.prod_eq [choice (inv p) (inverse p)] [choice (inv q) (inverse q)])
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|90|13|prod.ap_prod_mk_right|definition|Π {A} {B} {a} {b b'} p, eq (ap (λ b, mk a b) p) (prod.prod_eq idp p)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|53|13|prod.prod_eq_eta|definition|Π {A} {B} {u v} p, eq (prod.prod_eq (prod.eq_pr1 p) (prod.eq_pr2 p)) p
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|31|13|prod.eq_pr2|definition|Π {A} {B} {u v}, eq u v → eq (pr2 u) (pr2 v)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|273|13|prod.equiv_prod_rec|definition|Π {A} {B} P, equiv (Π a b, P (mk a b)) (Π u, P u)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|238|13|prod.prod_assoc_equiv|definition|Π A B C, equiv (prod A (prod B C)) (prod (prod A B) C)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|332|13|prod.tprod|definition|Π {n}, trunctype n → trunctype n → trunctype n
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|80|13|prod.prod_eq_equiv|definition|Π {A} {B} u v, equiv (eq u v) (prod (eq (pr1 u) (pr1 v)) (eq (pr2 u) (pr2 v)))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|111|13|prod.eq_pr2_concat|definition|Π {A B} {u v w} p q, eq (prod.eq_pr2 (concat p q)) (concat (prod.eq_pr2 p) (prod.eq_pr2 q))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|143|13|prod.prod_pathover|definition|Π {A} {P} {Q} {a a'} p u v, pathover _ (pr1 u) p (pr1 v) → pathover _ (pr2 u) p (pr2 v) → pathover _ u p v
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|43|13|prod.pair_prod_eq|definition|Π {A} {B} {u v} p q, eq (mk (prod.eq_pr1 (prod.prod_eq p q)) (prod.eq_pr2 (prod.prod_eq p q))) (mk p q)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|134|13|prod.prod_eq_transport|definition|Π {A} {B} {a a'} {b b'} p q {R} r, eq (transport _ (prod.prod_eq p q) r) (transport _ p (transport _ q r))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|173|13|prod.prod_functor|definition|Π {A} {A'} {B} {B'}, (A → A') → (B → B') → prod A B → prod A' B'
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|83|13|prod.pair_eq_pair_equiv|definition|Π {A} {B} a a' b b', equiv (eq (mk a b) (mk a' b')) (prod (eq a a') (eq b b'))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|181|13|prod.ap_diagonal|definition|Π {A} {a a'} p, eq (ap (λ x, mk x x) p) (prod.prod_eq p p)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|221|13|prod.prod_equiv_prod_right|definition|Π {A} {A'} {B}, equiv A A' → equiv (prod A B) (prod A' B)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|22|13|prod.pair_eq|definition|Π {A} {B} {a a'} {b b'}, eq a a' → eq b b' → eq (mk a b) (mk a' b')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|226|13|prod.is_equiv_flip|definition|Π A B, is_equiv flip
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|120|13|prod.prod_eq_concat|definition|Π {A} {B} {a a' a''} {b b' b''} p p' q q', eq (concat (prod.prod_eq p q) (prod.prod_eq p' q')) (prod.prod_eq (concat p p') (concat q q'))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|298|10|prod.is_trunc_prod|theorem|Π A B n [HA] [HB], is_trunc n (prod A B)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|329|13|prod.ppr2|definition|Π {A B}, pmap (prod.pprod A B) B
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|217|13|prod.prod_equiv_prod_left|definition|Π {A} {B} {B'}, equiv B B' → equiv (prod A B) (prod A B')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|28|13|prod.eq_pr1|definition|Π {A} {B} {u v}, eq u v → eq (pr1 u) (pr1 v)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|233|13|prod.prod_comm_equiv|definition|Π A B, equiv (prod A B) (prod B A)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|340|13|prod.pprod_functor|definition|Π {A B C D}, pmap A C → pmap B D → pmap (prod.pprod A B) (prod.pprod C D)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|47|13|prod.prod_eq_pr1|definition|Π {A} {B} {u v} p q, eq (prod.eq_pr1 (prod.prod_eq p q)) p
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|41|23|prod.ap_pr2|protected|Π {A} {B} {u v} p, eq (ap pr2 p) (prod.eq_pr2 p)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|317|13|prod.pointed_prod|definition|Π A B [H1] [H2], pointed (prod A B)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|67|13|prod.prod_eq_unc_pr2|definition|Π {A} {B} {u v} pq, eq (prod.eq_pr2 (prod.prod_eq_unc pq)) (pr2 pq)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|124|13|prod.prod_eq_concat_idp|definition|Π {A} {B} {a a'} {b b'} p q, eq (concat (prod.prod_eq p idp) (prod.prod_eq idp q)) (prod.prod_eq p q)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|283|13|prod.is_equiv_prod_corec|definition|Π {A} P Q, is_equiv prod.prod_corec_unc
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|256|13|prod.prod_empty_equiv|definition|Π A, equiv (prod A empty) empty
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|213|13|prod.prod_equiv_prod|definition|Π {A} {A'} {B} {B'}, equiv A A' → equiv B B' → equiv (prod A B) (prod A' B')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|97|13|prod.prod_eq_eq|definition|Π {A B} {u v} {p₁ q₁} {p₂ q₂}, eq p₁ q₁ → eq p₂ q₂ → eq (prod.prod_eq p₁ p₂) (prod.prod_eq q₁ q₂)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|102|13|prod.prod_eq_assemble|definition|Π {A B} {u v} {p q}, eq (prod.eq_pr1 p) (prod.eq_pr1 q) → eq (prod.eq_pr2 p) (prod.eq_pr2 q) → eq p q
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|40|23|prod.ap_pr1|protected|Π {A} {B} {u v} p, eq (ap pr1 p) (prod.eq_pr1 p)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|321|13|prod.pprod|definition|Type* → Type* → Type*
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|19|53|prod.ops.pr₁
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|19|60|prod.ops.pr₂
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|23|2|eq.ap011
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|23|8|prod.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|26|29|prod.pair_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|29|2|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|29|5|prod.pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|32|2|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|32|5|prod.pr2
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|35|19|std.prec.max
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|35|29|prod.eq_pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|36|19|std.prec.max
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|36|29|prod.eq_pr2
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|40|44|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|40|47|prod.pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|40|63|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|41|44|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|41|47|prod.pr2
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|41|63|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|44|8|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|44|26|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|47|60|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|48|3|prod.pair_prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|50|60|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|51|3|prod.pair_prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|53|39|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|58|31|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|61|6|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|61|27|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|62|35|prod.pair_prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|64|61|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|65|3|prod.pair_prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|67|61|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|68|3|prod.pair_prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|70|43|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|71|2|prod.prod_eq_eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|74|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|74|16|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|75|2|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|75|13|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|77|13|prod.prod_eq_unc_eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|78|13|prod.pair_prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|81|3|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|81|12|prod.prod_eq_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|85|2|prod.prod_eq_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|87|44|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|87|52|prod.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|87|69|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|87|79|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|88|2|eq.ap_eq_ap011_left
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|88|19|prod.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|90|45|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|90|53|prod.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|90|70|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|90|78|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|91|2|eq.ap_eq_ap011_right
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|91|20|prod.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|94|18|prod.pair_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|94|42|prod.eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|94|60|prod.eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|99|6|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|99|22|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|104|3|prod.prod_eq_eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|104|22|prod.prod_eq_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|104|46|prod.prod_eq_eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|117|54|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|117|71|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|121|6|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|121|20|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|121|36|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|125|6|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|125|16|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|125|22|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|125|30|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|125|38|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|135|7|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|141|38|eq.idpo
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|147|22|eq.idp_rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|148|10|eq.idpo
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|155|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|157|43|prod.prod_pathover
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|159|38|eq.idp_rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|10|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|29|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|44|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|53|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|177|62|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|182|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|182|29|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|186|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|186|34|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|187|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|187|19|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|191|32|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|191|36|prod.rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|191|49|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|192|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|192|19|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|196|27|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|196|31|prod.rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|196|44|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|196|54|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|196|61|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|197|2|prod.ap_prod_elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|197|19|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|197|26|eq.idp_con
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|201|65|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|201|82|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|202|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|202|16|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|204|10|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|204|24|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|205|40|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|205|52|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|206|40|is_equiv.left_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|206|51|is_equiv.left_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|209|60|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|209|77|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|211|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|211|12|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|214|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|214|12|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|218|2|prod.prod_equiv_prod
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|218|18|equiv.rfl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|222|2|prod.prod_equiv_prod
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|222|20|equiv.rfl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|227|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|227|16|prod.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|228|2|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|228|13|prod.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|229|13|prod.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|230|18|prod.destruct
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|230|36|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|231|18|prod.destruct
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|231|36|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|234|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|234|11|prod.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|240|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|247|62|is_trunc.is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|248|2|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|248|11|prod.pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|249|21|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|250|16|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|251|43|prod.pair_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|251|51|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|251|56|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|253|60|unit
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|254|3|prod.prod_contr_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|256|47|empty
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|256|55|empty
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|258|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|267|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|267|16|prod.rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|268|2|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|270|18|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|271|18|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|274|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|274|11|prod.rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|277|3|prod.equiv_prod_rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|284|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|284|16|prod.prod_corec_unc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|285|2|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|287|32|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|292|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|292|14|prod.is_equiv_prod_corec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|296|3|prod.equiv_prod_corec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|298|42|trunc_index
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|298|61|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|298|81|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|299|6|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|302|13|is_trunc.is_contr.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|303|16|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|303|25|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|304|23|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|304|48|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|305|12|is_trunc.is_trunc_succ_intro
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|306|12|is_trunc.is_trunc_equiv_closed_rev
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|306|45|prod.prod_eq_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|317|70|pointed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|317|87|pointed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|318|8|pointed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|319|2|pointed.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|319|14|pointed.pt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|319|17|pointed.pt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|322|2|pointed.mk'
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|324|22|prod.pprod
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|327|2|pmap.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|327|10|prod.pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|327|14|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|330|2|pmap.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|330|10|prod.pr2
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|330|14|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|332|38|trunc_index
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|333|2|trunctype.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|335|20|prod.tprod
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|338|2|pointed.ptrunctype.mk'
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|341|2|pmap.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|341|11|prod.prod_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|341|30|prod.prod_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|341|39|pointed.respect_pt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean|341|54|pointed.respect_pt

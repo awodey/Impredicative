@@ -1,0 +1,73 @@
+rule CLEAN
+  command =  "/usr/local/bin/ninja" -t clean
+  description = Cleaning all built files...
+rule LEAN
+  depfile = ${DLEAN_FILE}
+  command = "/Users/Steve/Documents/Lean/lean/bin/lean" --flycheck -c "/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.clean" -Dpp.width=45 $in -o "${OLEAN_FILE}" -c "${CLEAN_FILE}" -i "${ILEAN_FILE}" 
+rule LEANTAGS
+  command =  "/Users/Steve/Documents/Lean/lean/bin/leantags" --relative -- $in 
+build all: phony  /Users/Steve/Documents/Lean/lean/Impredicative/encode.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.olean  /Users/Steve/Documents/Lean/lean/Impredicative/arity.olean  /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.olean  /Users/Steve/Documents/Lean/lean/Impredicative/test.olean  /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.olean 
+build tags: phony TAGS
+build TAGS: LEANTAGS  /Users/Steve/Documents/Lean/lean/Impredicative/encode.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/arity.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/test.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.ilean  /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.ilean 
+build clean: CLEAN
+build /Users/Steve/Documents/Lean/lean/Impredicative/encode.olean /Users/Steve/Documents/Lean/lean/Impredicative/encode.ilean /Users/Steve/Documents/Lean/lean/Impredicative/encode.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/encode.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/encode.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/encode.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/encode.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/encode.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/encode.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.olean /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.ilean /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/arity.olean /Users/Steve/Documents/Lean/lean/Impredicative/arity.ilean /Users/Steve/Documents/Lean/lean/Impredicative/arity.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/arity.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/arity.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/arity.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/arity.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/arity.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/arity.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.olean /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.ilean /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/test.olean /Users/Steve/Documents/Lean/lean/Impredicative/test.ilean /Users/Steve/Documents/Lean/lean/Impredicative/test.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/test.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/test.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/test.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/test.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/test.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/test.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.olean /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.ilean /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.olean /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.ilean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/flycheck_prod.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.olean /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.ilean /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/eq.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/eq.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/eq.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/eq.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.olean /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.ilean /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/prod.ilean
+
+build /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.olean /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.ilean /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.clean: LEAN /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.hlean | /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.d /Users/Steve/Documents/Lean/lean/bin/lean
+  DLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.d
+  OLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.olean
+  CLEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.clean
+  ILEAN_FILE=/Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.ilean
+
+default all

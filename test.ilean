@@ -1,0 +1,43 @@
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|15|11|Or_is_prop|definition|Π A B, is_prop (Or A B)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|23|11|eq_of_iff|definition|Π p q, is_prop p → is_prop q → iff p q → eq p q
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|12|12|Or|definition|Prop → Prop → Type₀
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|6|11|my.inv|definition|Π A x y, eq x y → eq y x
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|29|11|or_is_disjunciton|definition|Π A B, eq (or A B) (trunc -2.+1 [choice (sum A B) (add A B)])
+d|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|20|12|or|definition|Prop → Prop → Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|7|0|eq.rec
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|7|8|eq.refl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|12|22|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|13|8|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|15|29|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|15|41|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|15|50|Or
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|17|9|is_trunc.is_prop.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|17|36|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|17|68|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|17|100|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|17|131|is_trunc.is_prop.elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|20|22|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|20|34|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|21|1|trunctype.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|21|15|Or
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|21|24|Or_is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|23|43|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|23|59|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|25|15|ua
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|25|44|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|25|87|is_trunc.is_prop.elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|26|15|is_trunc.is_prop.elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|29|36|Prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|29|49|or
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|29|59|trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|31|9|eq_of_iff
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|31|26|Or_is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|31|48|trunc.is_trunc_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|31|71|iff.intro
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|32|21|trunctype.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|32|35|trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|32|54|trunc.is_trunc_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|33|26|trunc.tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|33|36|sum.inl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|34|26|trunc.tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/test.hlean|34|36|sum.inr

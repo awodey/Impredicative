@@ -1,0 +1,278 @@
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|319|10|pi.is_prop_pi_eq|theorem|Π {A} a, is_prop (Π a', eq a a')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|126|13|pi.pi_pathover_left'|definition|Π {A} {B} {a a'} {C} {f} {g} {p}, (Π b, pathover _ (f b) (dpair_eq_dpair p pathover_tr) (g (transport _ p b))) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|148|13|pi.ap_lambdaD|definition|Π {A} {A'} {a a'} {C} p f, eq (ap (λ a b, f a b) p) (eq_of_homotopy (λ b, ap (λ a, f a b) p))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|348|13|pi.pi_equiv_arrow_sigma_right|definition|Π {A} {B}, (Π a, B a) → sigma (λ f, homotopy (compose [choice pr1 pr1] f) id)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|60|13|pi.is_equiv_eq_of_homotopy|definition|Π {A} {B} f g, is_equiv eq_of_homotopy
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|266|13|pi.pi_empty_left|definition|Π B, equiv (Π x, B x) unit
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|289|10|pi.is_trunc_pi|theorem|Π {A} B n [H], is_trunc n (Π a, B a)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|388|13|pi.pointed_pi|definition|Π {A} P [H], pointed (Π x, P x)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|227|13|pi.pi_equiv_pi_of_is_equiv|definition|Π {A} {A'} {B} {B'} f0 f1 [H] [H1], equiv (Π a, B a) (Π a', B' a')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|316|10|pi.is_trunc_not|theorem|Π n A, is_trunc n.+1 (not A)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|327|10|pi.is_prop_ne|theorem|Π {A} a b, is_prop (ne a b)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|241|13|pi.pi_equiv_of_is_contr_left|definition|Π {A} B [H], equiv (Π a, B a) (B (center A))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|190|13|pi.pi_functor_left|definition|Π {A} {A'} f0 B, (Π a, B a) → (Π a', B (f0 a'))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|165|13|pi.heq_pi|definition|Π {A} {B} {a a'} {C} p f g, equiv (Π b, eq (transport _ p (f b)) (g (transport _ p b))) (eq (transport _ p f) g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|278|13|pi.pi_bool_left|definition|Π B, equiv (Π x, B x) (prod (B ff) (B tt))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|31|13|pi.apd10_eq_of_homotopy|definition|Π {A} {B} {f g} h, homotopy (apd10 (eq_of_homotopy h)) h
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|34|13|pi.eq_of_homotopy_eta|definition|Π {A} {B} {f g} p, eq (eq_of_homotopy (apd10 p)) p
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|210|13|pi.is_equiv_pi_functor|definition|Π {A} {A'} {B} {B'} f0 f1 [H0] [H1], is_equiv (pi.pi_functor f0 f1)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|235|13|pi.pi_equiv_pi_right|definition|Π {A} {P Q}, (Π a, equiv (P a) (Q a)) → equiv (Π a, P a) (Π a, Q a)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|309|10|pi.is_trunc_pi_eq|theorem|Π {A} {B} n f g [H], is_trunc n (eq f g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|37|13|pi.eq_of_homotopy_idp|definition|Π {A} {B} f, eq (eq_of_homotopy (λ x, refl (f x))) (refl f)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|161|13|pi.heq_piD|definition|Π {A} {B} {C} {a a'} p f g, equiv (Π b, eq (transportD _ p _ (f b)) (g (transport _ p b))) (eq (transport _ p f) g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|197|13|pi.ap_pi_functor|definition|Π {A} {A'} {B} {B'} f0 f1 {g g'} h, eq (ap (pi.pi_functor f0 f1) (eq_of_homotopy h)) (eq_of_homotopy (λ a', ap (f1 a') (h (f0 a'))))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|187|13|pi.pi_functor|definition|Π {A} {A'} {B} {B'} f0, (Π a', B (f0 a') → B' a') → (Π a, B a) → (Π a', B' a')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|352|13|pi.pi_equiv_arrow_sigma_left|definition|Π {A} {B}, sigma (λ f, homotopy (compose [choice pr1 pr1] f) id) → (Π a, B a)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|82|13|pi.pi_pathover|definition|Π {A} {B} {C} {a a'} {f} {g} {p}, (Π b b' q, pathover _ (f b) (apd011 C p q) (g b')) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|135|13|pi.pi_pathover_right'|definition|Π {A} {B} {a a'} {C} {f} {g} {p}, (Π b', pathover _ (f (transport _ [choice (inv p) (inverse p)] b')) (dpair_eq_dpair p tr_pathover) (g b')) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|343|13|pi.pi_comm_equiv|definition|Π {A} {A'} {P}, equiv (Π a b, P a b) (Π b a, P a b)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|325|10|pi.is_prop_neg|theorem|Π A, is_prop (not A)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|275|13|pi.pi_unit_left|definition|Π B, equiv (Π x, B x) (B ⋆)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|329|13|pi.is_contr_pi_of_neg|definition|Π {A} B, not A → is_contr (Π a, B a)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|64|13|pi.homotopy_equiv_eq|definition|Π {A} {B} f g, equiv (homotopy f g) (eq f g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|90|13|pi.pi_pathover_left|definition|Π {A} {B} {C} {a a'} {f} {g} {p}, (Π b, pathover _ (f b) (apd011 C p pathover_tr) (g (transport _ p b))) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|175|13|pi.heq_pi_sigma|definition|Π {A} {B} {a a'} {C} p f g, equiv (Π b, eq (transport _ (sigma_eq p pathover_tr) (f b)) (g (transport _ p b))) (Π b, eq (transportD _ p _ (f b)) (g (transport _ p b)))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|357|13|pi.pi_equiv_arrow_sigma|definition|Π {A} B, equiv (Π a, B a) (sigma (λ f, homotopy (compose [choice pr1 pr1] f) id))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|55|13|pi.eq_equiv_homotopy|definition|Π {A} {B} f g, equiv (eq f g) (homotopy f g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|335|13|pi.is_equiv_flip|definition|Π {A} {A'} {P}, is_equiv (@flip A A' P)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|117|13|pi.pi_pathover'|definition|Π {A} {B} {a a'} {C} {f} {g} {p}, (Π b b' q, pathover _ (f b) (dpair_eq_dpair p q) (g b')) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|252|13|pi.pi_equiv_of_is_contr_right|definition|Π {A} {B} [H], equiv (Π a, B a) unit
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|41|13|pi.is_equiv_homotopy_symm|definition|Π {A} {B} {f g}, is_equiv homotopy.symm
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|231|13|pi.pi_equiv_pi|definition|Π {A} {A'} {B} {B'} f0, (Π a', equiv (B (to_fun f0 a')) (B' a')) → equiv (Π a, B a) (Π a', B' a')
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|76|13|pi.pi_transport_constant|definition|Π {A} {A'} {a a'} {C} p f b, eq (transport _ p f b) (transport _ p (f b))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|70|13|pi.pi_transport|definition|Π {A} {B} {C} {a a'} p f, homotopy (transport (λ a, Π b, C a b) p f) (λ b, transport _ tr_inv_tr (transportD _ p _ (f (transport _ [choice (inv p) (inverse p)] b))))
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|98|13|pi.pi_pathover_right|definition|Π {A} {B} {C} {a a'} {f} {g} {p}, (Π b', pathover _ (f (transport _ [choice (inv p) (inverse p)] b')) (apd011 C p tr_pathover) (g b')) → pathover _ f p g
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|58|13|pi.pi_eq_equiv|definition|Π {A} {B} f g, equiv (eq f g) (homotopy f g)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|193|13|pi.pi_functor_right|definition|Π {A} {B} {B'}, (Π a, B a → B' a) → (Π a, B a) → (Π a, B' a)
+d|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|106|13|pi.pi_pathover_constant|definition|Π {A} {A'} {a a'} {C} {f} {g} {p}, (Π b, pathover _ (f b) p (g b)) → pathover _ f p g
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|31|48|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|31|55|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|32|2|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|32|9|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|32|19|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|34|46|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|34|62|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|35|2|is_equiv.left_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|35|11|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|37|48|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|37|72|eq.refl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|37|86|eq.refl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|38|3|pi.eq_of_homotopy_eta
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|41|38|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|41|48|eq.homotopy.symm
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|43|11|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|43|22|eq.homotopy.symm
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|43|36|eq.homotopy.symm
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|44|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|45|34|eq.inv_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|46|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|47|34|eq.inv_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|56|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|56|11|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|58|65|pi.eq_equiv_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|61|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|61|16|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|65|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|65|11|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|71|7|eq.transport
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|71|54|eq.tr_inv_tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|77|7|eq.transport
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|83|55|eq.apd011
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|85|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|86|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|87|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|91|27|eq.apd011
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|91|39|eq.pathover_tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|93|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|94|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|95|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|99|38|eq.apd011
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|99|50|eq.tr_pathover
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|101|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|102|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|103|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|110|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|111|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|112|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|118|68|sigma.dpair_eq_dpair
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|121|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|122|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|123|12|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|123|51|eq.pathover.idpatho
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|127|40|sigma.dpair_eq_dpair
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|127|58|eq.pathover_tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|130|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|131|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|132|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|132|49|eq.pathover_ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|136|51|sigma.dpair_eq_dpair
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|136|69|eq.tr_pathover
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|139|19|eq.pathover_idp_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|140|10|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|141|10|eq.eq_of_pathover_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|141|49|eq.pathover_ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|149|4|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|149|25|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|149|45|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|151|11|eq.rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|152|10|eq.inverse
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|153|10|pi.eq_of_homotopy_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|163|2|eq.rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|163|20|pi.homotopy_equiv_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|167|2|eq.rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|167|20|pi.homotopy_equiv_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|177|18|sigma.sigma_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|177|30|eq.pathover_tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|179|2|eq.rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|179|20|equiv.rfl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|191|2|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|191|21|id
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|195|2|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|195|13|id
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|198|6|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|198|10|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|198|29|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|199|8|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|199|33|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|201|9|is_equiv.is_equiv_rect
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|201|25|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|203|8|eq.concat
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|204|11|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|204|15|eq.ap
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|204|19|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|204|39|pi.eq_of_homotopy_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|205|10|eq.symm
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|205|22|pi.eq_of_homotopy_idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|210|64|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|211|15|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|211|35|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|211|45|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|213|11|is_equiv.adjointify
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|213|23|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|213|42|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|214|40|eq.transport
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|214|53|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|216|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|217|15|is_equiv.adj
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|217|26|eq.tr_compose
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|217|37|eq.fn_tr_eq_tr_fn
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|217|57|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|218|12|eq.apdt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|221|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|222|15|is_equiv.left_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|223|12|eq.apdt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|227|56|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|228|15|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|229|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|229|12|pi.pi_functor
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|231|68|equiv.to_fun
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|233|2|pi.pi_equiv_pi_of_is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|233|27|equiv.to_fun
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|233|44|equiv.to_fun
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|237|2|pi.pi_equiv_pi
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|237|14|equiv.rfl
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|241|73|is_trunc.is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|242|21|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|244|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|245|24|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|246|23|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|247|24|is_trunc.prop_eq_of_is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|247|45|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|247|56|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|247|67|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|248|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|248|57|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|249|15|is_trunc.prop_eq_of_is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|249|36|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|249|47|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|249|58|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|252|63|is_trunc.is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|253|18|unit
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|255|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|256|21|unit.star
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|257|24|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|259|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|259|52|is_trunc.is_prop.elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|266|46|empty
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|266|74|unit
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|268|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|269|21|unit.star
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|272|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|275|45|unit
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|275|74|unit.star
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|276|3|pi.pi_equiv_of_is_contr_left
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|278|45|bool
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|278|74|bool.ff
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|278|81|bool.tt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|280|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|281|24|bool.ff
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|281|30|bool.tt
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|284|21|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|289|42|trunc_index
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|290|15|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|290|35|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|293|12|trunc_index.rec_on
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|295|15|is_trunc.is_contr.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|296|25|is_trunc.center
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|297|25|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|298|28|is_trunc.center_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|300|15|is_trunc.is_trunc_succ_intro
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|301|17|is_trunc.is_trunc_equiv_closed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|302|18|equiv.symm
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|302|36|pi.eq_equiv_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|305|19|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|306|14|is_trunc.is_trunc_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|309|56|trunc_index
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|310|15|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|310|41|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|312|10|is_trunc.is_trunc_equiv_closed_rev
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|313|10|pi.eq_equiv_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|316|39|trunc_index
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|316|65|is_trunc
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|319|60|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|320|2|is_trunc.is_prop_of_imp_is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|322|9|is_trunc.is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|322|26|is_trunc.is_contr.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|325|35|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|327|55|is_trunc.is_prop
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|329|70|is_trunc.is_contr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|331|10|is_trunc.is_contr.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|331|27|empty.elim
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|331|61|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|336|6|is_equiv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|336|17|function.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|338|11|is_equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|339|12|function.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|339|31|function.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|340|27|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|344|2|equiv.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|344|13|function.flip
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|349|34|id
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|350|21|eq.idp
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|353|39|id
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|354|2|eq.transport
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|358|46|id
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|360|11|equiv.MK
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|361|12|pi.pi_equiv_arrow_sigma_right
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|362|12|pi.pi_equiv_arrow_sigma_left
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|363|44|sigma.sigma_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|364|14|eq.eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|364|46|sigma.sigma_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|366|16|eq.inverseo
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|366|32|eq.pathover_tr
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|367|14|pi.pi_pathover_constant
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|367|51|eq.eq_pathover_constant_right
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|368|15|eq.ap_compose
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|369|15|eq.ap02
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|369|23|eq.compose_eq_of_homotopy
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|370|16|eq.ap_eq_apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|371|15|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|371|22|is_equiv.right_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|371|32|eq.apd10
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|372|23|sigma.sigma_eq_pr1
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|372|49|eq.square_of_eq
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|372|70|eq.con.left_inv
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|388|84|pointed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|389|8|pointed
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|390|2|pointed.mk
+r|/Users/Steve/Documents/Lean/lean/Impredicative/types/pi.hlean|390|18|pointed.pt

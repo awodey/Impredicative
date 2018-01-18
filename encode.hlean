@@ -1,0 +1,159 @@
+import imp_prop_trunc 
+
+open funext eq trunc is_trunc prod sum pi function is_equiv
+
+attribute trunc.rec [recursor] 
+
+definition my.inv (A : Type)(x y : A)(p : x=y) : y = x :=
+eq.rec (eq.refl x) p
+
+-- check ℕ
+-- check Π(X : Type.{0}), ℕ
+
+
+/- Disjunction of propositions -/
+
+definition  Or (A B : Prop.{0}) : Type.{0} :=
+  Π(X : Prop.{0}), (A → X) → ((B → X) → X)
+
+definition Or_is_prop (A B : Prop.{0}) : is_prop (Or A B) :=
+  begin
+  fapply is_prop.mk, intros, fapply eq_of_homotopy, intro p, fapply eq_of_homotopy, 
+  intro g, fapply eq_of_homotopy, intro h, apply is_prop.elim 
+  end
+
+definition  or (A B : Prop.{0}) : Prop.{0} :=
+ trunctype.mk (Or A B) (Or_is_prop A B)
+
+definition eq_of_iff (p q : Type.{0}) (h : is_prop p) (k : is_prop q) 
+           : (p ↔ q) → (p = q) := 
+  begin
+  intro a, apply ua, cases a with f g, fapply equiv.MK, 
+  exact f, exact g, intro b, apply is_prop.elim,
+  intro a, apply is_prop.elim
+  end
+
+-- check trunc -1 (A + B)
+
+definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
+  begin
+  fapply eq_of_iff, exact Or_is_prop A B, apply is_trunc_trunc, fapply iff.intro, 
+  {intro p, apply p (trunctype.mk (trunc -1 (A + B)) !is_trunc_trunc),
+   {esimp, intro a, apply tr, exact inl a},
+   {esimp, intro b, apply tr, exact inr b} },
+  {intro x, induction x with s, cases s with a b, 
+   {intro,intro f g, exact f a },
+   {intro,intro f g, exact g b } }
+  end
+
+/- Propositional truncation of small types -/
+
+definition  PropTrunc (A : Type.{0}) : Type.{0} := 
+  Π(X : Prop.{0}), (A → X) → X
+
+definition PropTrunc_is_prop (A : Type.{0}) : is_prop (PropTrunc A) :=
+  begin
+  apply is_trunc_pi
+-- fapply is_prop.mk, intros f g, fapply eq_of_homotopy, 
+-- intros X, fapply eq_of_homotopy, intros u, apply is_prop.elim,  
+  end
+
+definition  prop_trunc (A : Type.{0}) : Prop.{0} :=
+ trunctype.mk (PropTrunc A) (PropTrunc_is_prop A)
+
+definition trunc_minus_one (A : Type.{0}) : Prop.{0} := trunctype.mk (trunc -1 A)(is_prop.mk (is_prop.elim))
+
+definition prop_trunc_is_trunc_minus_one (A : Type.{0}) : (prop_trunc A) = (trunc_minus_one A) :> Type₀ :=
+  begin
+  fapply eq_of_iff, 
+  exact PropTrunc_is_prop A, 
+  apply is_trunc_trunc, 
+  fapply iff.intro,
+  intros, exact (a (trunc_minus_one A)) tr,
+  intros p, induction p, intro X, intro f, exact f a 
+  end
+
+definition is_prop_is_prop (A : Type.{0}) : is_prop (is_prop A) := _
+
+definition eq_of_props (A B : Prop.{0}) : (A = B :> Type₀) -> A = B :=
+  begin
+    intro, induction A with A p, induction B with B q, esimp at a, fapply apd011 Prop.mk,
+    exact a, fapply is_prop.elimo
+  end  
+
+definition prop_trunc_is_trunc_minus_one_in_Prop (A : Type.{0}) :
+           (prop_trunc A) = (trunc_minus_one A) :=
+  begin
+  apply eq_of_props (prop_trunc A) (trunc_minus_one A), 
+  exact prop_trunc_is_trunc_minus_one A
+  end
+
+/- Propositional truncation of large types -/
+
+definition  PropTruncL (A : Type) : Type.{0} := 
+  Π(X : Prop.{0}), (A → X) → X
+
+definition PropTruncL_is_prop (A : Type) : is_prop (PropTruncL A) :=
+  begin
+  apply is_trunc_pi
+  end
+
+definition  prop_truncL (A : Type) : Prop.{0} :=
+ trunctype.mk (PropTruncL A) (PropTruncL_is_prop A)
+
+definition trunc_minus_oneL (A : Type) : Prop := 
+  trunctype.mk (trunc -1 A)(is_prop.mk (is_prop.elim))
+
+definition  propL {A : Type} (a : A) : (PropTruncL A) :=
+begin
+intro, intro f, exact f a  
+end
+
+definition prop_truncL_is_Prop0_resizing (A : Type) (P : Prop.{0}) : 
+  ((prop_truncL A) → P) ≃ (A → P) :=
+  begin
+  fapply equiv.MK, intro f a, exact f (propL a),
+  intro f, intro, exact a P f,
+  intro, fapply is_prop.elim,
+  intro, fapply is_prop.elim
+  end
+
+/- Encoding of a set -/
+
+definition PreSetEncode (A : Set.{0}) : Type.{0} := 
+  Π(X : Set.{0}), (A → X) → X
+
+definition postcompose (A : Set.{0}) { X Y : Set.{0}} (f : X → Y) : (A → X) → (A → Y) :=
+  λ g : A → X, f ∘ g 
+
+notation f `^` A := postcompose A f  
+
+definition  SetEncode (A : Set.{0}) : Type.{0} := 
+  Σ(α : PreSetEncode A), Π(X Y : Set.{0}), Π(f : X → Y), α Y ∘ (f^A) ~ f ∘ α X
+
+notation `Set₀`  := Set.{0} 
+
+definition eta (A : Set₀) (a : A) : SetEncode A :=
+  begin
+  fapply sigma.mk, 
+ { intro, intro f , exact f a },
+  intros X Y f,  intro g, esimp
+  end
+
+open sigma.ops sigma
+definition myname := @is_prop.elimo
+
+/- The basic lemma -/
+
+definition eta_is_equiv (A : Set.{0}) : is_equiv (eta A) :=
+  begin
+ fapply adjointify, 
+ {intro e, exact e.1 A id },
+ {intro e, fapply sigma_eq, unfold eta, apply eq_of_homotopy, 
+   intro X, apply eq_of_homotopy, intro f,
+   note p:= e.2 A X f, symmetry, exact p id, apply myname},
+   intro a, reflexivity 
+end
+
+
+
