@@ -153,5 +153,85 @@ definition eta_is_equiv (A : Set.{0}) : is_equiv (eta A) :=
    intro a, reflexivity 
 end
 
+/- Product A × B of sets -/
+
+definition  preProduct (A B : Set₀) : Type.{0} :=
+  Π(X : Set₀), (A → B → X) → X
+
+definition preProduct_is_set (A B : Set₀) : is_set (preProduct A B) :=
+  begin
+    apply is_trunc_pi
+  end
+
+definition product_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A → B → X) → (A → B → Y) :=
+    λ g : A → B → X, λ a : A, f ∘ (g a)
+
+definition  Product (A B : Set₀) : Type.{0} := 
+  Σ(α : preProduct A B), Π(X Y : Set₀), Π(f : X → Y), (α Y) ∘ (product_functor A B f) ~ f ∘ α X
+
+definition product_to_times {A B : Set₀}(u : Product A B) : A × B :=
+  begin
+    fapply pair,
+    {begin induction u with f p, exact (f A)(λ x:A, λ y:B, x) end},
+    {begin induction u with f p, exact (f B)(λ x:A, λ y:B, y) end}
+  end
+
+definition times_to_product {A B : Set₀}(v : A × B) : Product A B :=
+  begin
+  fapply sigma.mk, 
+    {intro X, intro f, exact f (pr1 v) (pr2 v)},
+    {intro X Y f, intro g, esimp}
+  end
+
+/--definition product_is_times (A B : Set₀) is_equiv (times_to_product A B) :=
+  begin
+  end
+--/
+
+/- Coproduct A + B of sets -/
+
+definition  preSum (A B : Set₀) : Type.{0} :=
+  Π(X : Set₀), (A × B → X) → X
+
+definition preSum_is_set (A B : Set₀) : is_set (preSum A B) :=
+  begin
+    apply is_trunc_pi
+  end
+
+definition sum_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A × B → X) → (A × B → Y) :=
+  λ g : A × B → X, f ∘ g 
+
+definition  Sum (A B : Set₀) : Type.{0} := 
+  Σ(α : preSum A B), Π(X Y : Set₀), Π(f : X → Y), α Y ∘ (sum_functor A B f) ~ f ∘ α X
 
 
+
+
+
+/--
+
+definition  or (A B : Prop.{0}) : Prop.{0} :=
+ trunctype.mk (Or A B) (Or_is_prop A B)
+
+definition eq_of_iff (p q : Type.{0}) (h : is_prop p) (k : is_prop q) 
+           : (p ↔ q) → (p = q) := 
+  begin
+  intro a, apply ua, cases a with f g, fapply equiv.MK, 
+  exact f, exact g, intro b, apply is_prop.elim,
+  intro a, apply is_prop.elim
+  end
+
+-- check trunc -1 (A + B)
+
+definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
+  begin
+  fapply eq_of_iff, exact Or_is_prop A B, apply is_trunc_trunc, fapply iff.intro, 
+  {intro p, apply p (trunctype.mk (trunc -1 (A + B)) !is_trunc_trunc),
+   {esimp, intro a, apply tr, exact inl a},
+   {esimp, intro b, apply tr, exact inr b} },
+  {intro x, induction x with s, cases s with a b, 
+   {intro,intro f g, exact f a },
+   {intro,intro f g, exact g b } }
+  end
+
+--/
