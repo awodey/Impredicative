@@ -143,8 +143,6 @@ definition eta (A : Set₀) (a : A) : SetEncode A :=
 open sigma.ops sigma
 definition myname := @is_prop.elimo
 
-/- The basic lemma -/
-
 definition eta_is_equiv (A : Set.{0}) : is_equiv (eta A) :=
   begin
  fapply adjointify, 
