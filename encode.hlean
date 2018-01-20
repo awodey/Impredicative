@@ -169,24 +169,29 @@ definition product_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A →
 definition  Product (A B : Set₀) : Type.{0} := 
   Σ(α : preProduct A B), Π(X Y : Set₀), Π(f : X → Y), (α Y) ∘ (product_functor A B f) ~ f ∘ α X
 
-definition product_to_times {A B : Set₀}(u : Product A B) : A × B :=
+definition product_to_times (A B : Set₀)(u : Product A B) : A × B :=
   begin
     fapply pair,
     {begin induction u with f p, exact (f A)(λ x:A, λ y:B, x) end},
     {begin induction u with f p, exact (f B)(λ x:A, λ y:B, y) end}
   end
 
-definition times_to_product {A B : Set₀}(v : A × B) : Product A B :=
+definition times_to_product (A B : Set₀)(v : A × B) : Product A B :=
   begin
   fapply sigma.mk, 
     {intro X, intro f, exact f (pr1 v) (pr2 v)},
     {intro X Y f, intro g, esimp}
   end
 
-/--definition product_is_times (A B : Set₀) is_equiv (times_to_product A B) :=
-  begin
-  end
---/
+definition times_is_equiv_product (A B : Set₀) : is_equiv (times_to_product A B) :=
+begin
+fapply adjointify,
+  {exact product_to_times A B},
+  
+end
+
+-- add the simple UMP of Product w/o assuming times.
+
 
 /- Coproduct A + B of sets -/
 
