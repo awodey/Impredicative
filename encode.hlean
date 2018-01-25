@@ -4,6 +4,8 @@ open funext eq trunc is_trunc prod sum pi function is_equiv
 
 attribute trunc.rec [recursor] 
 
+axiom UA_for_props (A B : Prop) : (A ↔ B) → (A = B :> Type)
+
 definition my.inv (A : Type)(x y : A)(p : x=y) : y = x :=
 eq.rec (eq.refl x) p
 
@@ -37,7 +39,9 @@ definition eq_of_iff (p q : Type.{0}) (h : is_prop p) (k : is_prop q)
 
 definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
   begin
-  fapply eq_of_iff, exact Or_is_prop A B, apply is_trunc_trunc, fapply iff.intro, 
+  fapply  UA_for_props (or A B) (trunctype.mk (trunc -1 (A + B)) _),  
+ -- exact Or_is_prop A B, apply is_trunc_trunc, 
+fapply iff.intro, 
   {intro p, apply p (trunctype.mk (trunc -1 (A + B)) !is_trunc_trunc),
    {esimp, intro a, apply tr, exact inl a},
    {esimp, intro b, apply tr, exact inr b} },
@@ -45,6 +49,8 @@ definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
    {intro,intro f g, exact f a },
    {intro,intro f g, exact g b } }
   end
+
+-- print axioms or_is_disjunction
 
 /- Propositional truncation of small types -/
 
