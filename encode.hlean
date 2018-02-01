@@ -175,7 +175,14 @@ definition product_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A →
 definition  Product (A B : Set₀) : Type.{0} := 
   Σ(α : preProduct A B), Π(X Y : Set₀), Π(f : X → Y), (α Y) ∘ (product_functor A B f) ~ f ∘ α X
 
-definition product_to_times (A B : Set₀)(u : Product A B) : A × B :=
+definition Pair {A B : Set₀} (a : A) (b : B) : Product A B :=
+  begin
+  fapply sigma.mk, 
+  {intro X f, exact f a b},
+  {intros X Y f, intro g, esimp}
+  end
+
+definition product_to_times (A B : Set₀)(u : Product A B) : A × B := 
   begin
 fapply pair,
     {begin induction u with f p, exact (f A)(λ x:A, λ y:B, x) end},
@@ -202,7 +209,22 @@ fapply adjointify,
   sorry }
 end
 
--- add the simple UMP of Product w/o assuming times.
+-- left adjoint UMP of Product, w/o assuming times.
+
+definition UP_of_Product_map (A B X : Set₀) : ((Product A B) → X) → (A → B → X) :=
+  begin
+  intro h, intro a b, exact h (Pair a b),
+  end
+
+definition UP_of_Product (A B : Set₀) {X : Set₀} : is_equiv (UP_of_Product_map A B X)  :=
+  begin
+  fapply adjointify,
+  { intro f, intro u, exact u.1 X f },
+  { intro f, fapply eq_of_homotopy, unfold UP_of_Product_map},
+  { intro f, fapply eq_of_homotopy, intro u, intro, 
+    note g := UP_of_Product_map A B X, unfold UP_of_Product_map,  
+    sorry},
+  end
 
 
 /- Coproduct A + B of sets -/
