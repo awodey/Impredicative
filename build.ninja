@@ -3,7 +3,7 @@ rule CLEAN
   description = Cleaning all built files...
 rule LEAN
   depfile = ${DLEAN_FILE}
-  command = "/Users/Steve/Documents/Lean/lean/bin/lean" --flycheck -c "/Users/Steve/Documents/Lean/lean/Impredicative/encode.clean" -Dpp.width=124 $in -o "${OLEAN_FILE}" -c "${CLEAN_FILE}" -i "${ILEAN_FILE}" 
+  command = "/Users/Steve/Documents/Lean/lean/bin/lean" --flycheck -c "/Users/Steve/Documents/Lean/lean/Impredicative/encode.clean" -Dpp.width=45 $in -o "${OLEAN_FILE}" -c "${CLEAN_FILE}" -i "${ILEAN_FILE}" 
 rule LEANTAGS
   command =  "/Users/Steve/Documents/Lean/lean/bin/leantags" --relative -- $in 
 build all: phony  /Users/Steve/Documents/Lean/lean/Impredicative/encode.olean  /Users/Steve/Documents/Lean/lean/Impredicative/flycheck_encode.olean  /Users/Steve/Documents/Lean/lean/Impredicative/arity.olean  /Users/Steve/Documents/Lean/lean/Impredicative/imp_prop_trunc.olean  /Users/Steve/Documents/Lean/lean/Impredicative/test.olean  /Users/Steve/Documents/Lean/lean/Impredicative/cubical/square.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/pi.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/eq.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/prod.olean  /Users/Steve/Documents/Lean/lean/Impredicative/types/sigma.olean 
