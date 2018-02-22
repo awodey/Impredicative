@@ -1,4 +1,4 @@
-import imp_prop_trunc 
+import .imp_prop_trunc 
 
 open funext eq trunc is_trunc prod sum pi function is_equiv
 
