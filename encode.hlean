@@ -12,6 +12,7 @@ eq.rec (eq.refl x) p
 -- check ℕ
 -- check Π(X : Type.{0}), ℕ
 
+/- Encoding of Propostions -/
 
 /- Disjunction of propositions -/
 
@@ -35,13 +36,10 @@ definition eq_of_iff (p q : Type.{0}) (h : is_prop p) (k : is_prop q)
   intro a, apply is_prop.elim
   end
 
--- check trunc -1 (A + B)
-
 definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
   begin
   fapply  UA_for_props (or A B) (trunctype.mk (trunc -1 (A + B)) _),  
- -- exact Or_is_prop A B, apply is_trunc_trunc, 
-fapply iff.intro, 
+   fapply iff.intro, 
   {intro p, apply p (trunctype.mk (trunc -1 (A + B)) !is_trunc_trunc),
    {esimp, intro a, apply tr, exact inl a},
    {esimp, intro b, apply tr, exact inr b} },
@@ -124,7 +122,11 @@ definition prop_truncL_is_Prop0_resizing (A : Type) (P : Prop.{0}) :
   intro, fapply is_prop.elim
   end
 
+/- Set encodings -/
+
 /- Encoding of a set -/
+
+notation `Set₀`  := Set.{0} 
 
 definition PreSetEncode (A : Set.{0}) : Type.{0} := 
   Π(X : Set.{0}), (A → X) → X
@@ -132,12 +134,10 @@ definition PreSetEncode (A : Set.{0}) : Type.{0} :=
 definition postcompose (A : Set.{0}) { X Y : Set.{0}} (f : X → Y) : (A → X) → (A → Y) :=
   λ g : A → X, f ∘ g 
 
-notation f `^` A := postcompose A f  
+notation f `^` A := postcompose A f 
 
 definition  SetEncode (A : Set.{0}) : Type.{0} := 
   Σ(α : PreSetEncode A), Π(X Y : Set.{0}), Π(f : X → Y), α Y ∘ (f^A) ~ f ∘ α X
-
-notation `Set₀`  := Set.{0} 
 
 definition eta (A : Set₀) (a : A) : SetEncode A :=
   begin
@@ -147,7 +147,9 @@ definition eta (A : Set₀) (a : A) : SetEncode A :=
   end
 
 open sigma.ops sigma
-definition myname := @is_prop.elimo
+definition ispropelim := @is_prop.elimo
+
+/- The "Basic Lemma" -/
 
 definition eta_is_equiv (A : Set.{0}) : is_equiv (eta A) :=
   begin
@@ -155,7 +157,7 @@ definition eta_is_equiv (A : Set.{0}) : is_equiv (eta A) :=
  {intro e, exact e.1 A id },
  {intro e, fapply sigma_eq, unfold eta, apply eq_of_homotopy, 
    intro X, apply eq_of_homotopy, intro f,
-   note p:= e.2 A X f, symmetry, exact p id, apply myname},
+   note p:= e.2 A X f, symmetry, exact p id, apply ispropelim},
    intro a, reflexivity 
 end
 
