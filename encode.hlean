@@ -184,11 +184,23 @@ definition Pair {A B : Set₀} (a : A) (b : B) : Product A B :=
   {intros X Y f, intro g, esimp}
   end
 
+definition Proj1 {A B : Set₀} (c : Product A B) : A :=
+  begin
+  induction c with alpha p,
+  exact alpha A (λ x:A, λ y:B, x)
+  end
+
+definition Proj2 {A B : Set₀} (c : Product A B) : B :=
+  begin
+  induction c with alpha p,
+  exact alpha B (λ x:A, λ y:B, y),
+  end
+
 definition product_to_times (A B : Set₀)(u : Product A B) : A × B := 
   begin
 fapply pair,
-    {begin induction u with f p, exact (f A)(λ x:A, λ y:B, x) end},
-    {begin induction u with f p, exact (f B)(λ x:A, λ y:B, y) end}
+    {exact Proj1 u},
+    {exact Proj2 u},
   end
 
 definition times_to_product (A B : Set₀)(v : A × B) : Product A B :=
@@ -199,16 +211,22 @@ definition times_to_product (A B : Set₀)(v : A × B) : Product A B :=
   end
 
 open prod.ops
+
 definition times_is_equiv_product (A B : Set₀) : is_equiv (times_to_product A B) :=
 begin
 fapply adjointify,
-  {exact product_to_times A B},
-  {intros u, esimp, induction u with f p, 
-  fapply sigma_eq, esimp[product_to_times, times_to_product],
-{fapply eq_of_homotopy2, intro X g, note z := p (A ×t B) X (λ(v : A × B), g v.1 v.2) pair, esimp [product_functor] at z, 
-  sorry }
--- intro,  fapply eq_of_homotopy, intro g,   fapply eq_of_homotopy, }
-  sorry }
+  { exact  product_to_times A B},
+  { intros u, esimp, induction u with f p, 
+    fapply sigma_eq, 
+   { esimp,
+-- [product_to_times, times_to_product],
+  },
+   { fapply eq_of_homotopy2,
+   -- intro X g,  
+   -- note z := p (A ×t B) X (λ(v : A × B), g v.1 v.2) pair, 
+   -- esimp [product_functor] at z,
+    },
+  },
 end
 
 -- left adjoint UMP of Product, w/o assuming times.
