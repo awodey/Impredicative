@@ -166,7 +166,7 @@ end
 definition  preProduct (A B : Set₀) : Type.{0} :=
   Π(X : Set₀), (A → B → X) → X
 
-definition preProduct_is_set (A B : Set₀) : is_set (preProduct A B) :=
+definition preProduct_is_set [instance] (A B : Set₀) : is_set (preProduct A B) :=
   begin
     apply is_trunc_pi
   end
@@ -176,6 +176,9 @@ definition product_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A →
 
 definition  Product (A B : Set₀) : Type.{0} := 
   Σ(α : preProduct A B), Π(X Y : Set₀), Π(f : X → Y), (α Y) ∘ (product_functor A B f) ~ f ∘ α X
+
+definition SetProduct (A B : Set₀) : Set₀ :=
+trunctype.mk (Product A B) !is_trunc_sigma
 
 definition Pair {A B : Set₀} (a : A) (b : B) : Product A B :=
   begin
@@ -216,14 +219,26 @@ definition times_is_equiv_product (A B : Set₀) : is_equiv (times_to_product A 
 begin
 fapply adjointify,
   { exact  product_to_times A B},
-  { intros u, esimp, induction u with f p, 
-    fapply sigma_eq, 
+  { intros u, esimp, induction u with f p, fapply sigma_eq, 
    { esimp[product_to_times, times_to_product, Proj1, Proj2],
      fapply eq_of_homotopy2, intros X g, 
-   -- note z := p (A ×t B) X (λ(v : A × B), g v.1 v.2) pair, 
-   -- esimp [product_functor] at z,
-    },
-  },
+     note z := p (A ×t B) X (λ(v : A × B), g v.1 v.2) pair, 
+     refine _ ⬝ z⁻¹,
+     note zA := p (A ×t B) A pr1 pair,
+     note zB := p (A ×t B) B pr2 pair,
+     esimp at *,
+     rewrite [-zA, -zB] },
+   apply is_prop.elimo },
+ { intro a, induction a with a b, esimp[product_to_times, times_to_product] },
+end
+
+open sigma.ops
+definition Product_eta (A B : Set₀) (f : Product A B) : f.1 (SetProduct A B) Pair = f :=
+begin 
+  apply subtype_eq, apply eq_of_homotopy2, intro X h, 
+note z := f.2 (SetProduct A B) X,
+note z2 := z (λ(g : SetProduct A B), g.1 X h) Pair, esimp at z2,
+exact z2⁻¹, 
 end
 
 -- left adjoint UMP of Product, w/o assuming times.
@@ -238,9 +253,10 @@ definition UP_of_Product (A B : Set₀) {X : Set₀} : is_equiv (UP_of_Product_m
   fapply adjointify,
   { intro f, intro u, exact u.1 X f },
   { intro f, fapply eq_of_homotopy, unfold UP_of_Product_map},
-  { intro f, fapply eq_of_homotopy, intro u, intro, 
-    note g := UP_of_Product_map A B X, unfold UP_of_Product_map,  
-    sorry},
+  { intro g, fapply eq_of_homotopy, intro u, intro, 
+    induction u with f p, esimp,
+    note z := p (SetProduct A B) X g Pair,
+    esimp at z, refine z ⬝ _ , exact ap g (Product_eta A B ⟨f, p⟩ )}
   end
 
 
