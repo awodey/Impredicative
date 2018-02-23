@@ -178,7 +178,7 @@ definition  Product (A B : Set₀) : Type.{0} :=
   Σ(α : preProduct A B), Π(X Y : Set₀), Π(f : X → Y), (α Y) ∘ (product_functor A B f) ~ f ∘ α X
 
 definition SetProduct (A B : Set₀) : Set₀ :=
-trunctype.mk (Product A B) !is_trunc_sigma
+  trunctype.mk (Product A B) !is_trunc_sigma
 
 definition Pair {A B : Set₀} (a : A) (b : B) : Product A B :=
   begin
@@ -218,92 +218,86 @@ open prod.ops
 definition times_is_equiv_product (A B : Set₀) : is_equiv (times_to_product A B) :=
 begin
 fapply adjointify,
-  { exact  product_to_times A B},
-  { intros u, esimp, induction u with f p, fapply sigma_eq, 
-   { esimp[product_to_times, times_to_product, Proj1, Proj2],
+  {exact  product_to_times A B},
+  {intros u, esimp, induction u with f p, fapply sigma_eq, 
+    {esimp[product_to_times, times_to_product, Proj1, Proj2],
      fapply eq_of_homotopy2, intros X g, 
      note z := p (A ×t B) X (λ(v : A × B), g v.1 v.2) pair, 
      refine _ ⬝ z⁻¹,
      note zA := p (A ×t B) A pr1 pair,
      note zB := p (A ×t B) B pr2 pair,
      esimp at *,
-     rewrite [-zA, -zB] },
-   apply is_prop.elimo },
- { intro a, induction a with a b, esimp[product_to_times, times_to_product] },
+     rewrite [-zA, -zB]},
+   apply is_prop.elimo},
+  {intro a, induction a with a b, esimp[product_to_times, times_to_product]}
 end
 
 open sigma.ops
+
+-- the eta-rule for the encoded Product.
+
 definition Product_eta (A B : Set₀) (f : Product A B) : f.1 (SetProduct A B) Pair = f :=
 begin 
   apply subtype_eq, apply eq_of_homotopy2, intro X h, 
-note z := f.2 (SetProduct A B) X,
-note z2 := z (λ(g : SetProduct A B), g.1 X h) Pair, esimp at z2,
-exact z2⁻¹, 
+   note z := f.2 (SetProduct A B) X,
+   note z2 := z (λ(g : SetProduct A B), g.1 X h) Pair,
+  esimp at z2,
+  exact z2⁻¹
 end
 
--- left adjoint UMP of Product, w/o assuming times.
+-- left adjoint UMP of Product w/o assuming times.
 
 definition UP_of_Product_map (A B X : Set₀) : ((Product A B) → X) → (A → B → X) :=
   begin
   intro h, intro a b, exact h (Pair a b),
   end
 
-definition UP_of_Product (A B : Set₀) {X : Set₀} : is_equiv (UP_of_Product_map A B X)  :=
+definition UP_of_Product (A B : Set₀) {X : Set₀} : is_equiv (UP_of_Product_map A B X) :=
   begin
   fapply adjointify,
-  { intro f, intro u, exact u.1 X f },
-  { intro f, fapply eq_of_homotopy, unfold UP_of_Product_map},
-  { intro g, fapply eq_of_homotopy, intro u, intro, 
-    induction u with f p, esimp,
-    note z := p (SetProduct A B) X g Pair,
-    esimp at z, refine z ⬝ _ , exact ap g (Product_eta A B ⟨f, p⟩ )}
+  {intro f, intro u, exact u.1 X f},
+  {intro f, fapply eq_of_homotopy, unfold UP_of_Product_map},
+  {intro g, fapply eq_of_homotopy, intro u, intro, induction u with f p, esimp,
+      note z := p (SetProduct A B) X g Pair,
+    esimp at z, refine z ⬝ _ , exact ap g (Product_eta A B ⟨f, p⟩)}
   end
 
 
-/- Coproduct A + B of sets -/
+/- Sum A + B of sets -/
 
 definition  preSum (A B : Set₀) : Type.{0} :=
-  Π(X : Set₀), (A × B → X) → X
+  Π(X : Set₀), (A → X) × (B → X) → X
 
-definition preSum_is_set (A B : Set₀) : is_set (preSum A B) :=
+definition preSum_is_set [instance] (A B : Set₀) : is_set (preSum A B) :=
   begin
     apply is_trunc_pi
   end
 
-definition sum_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) : (A × B → X) → (A × B → Y) :=
-  λ g : A × B → X, f ∘ g 
+definition sum_functor (A B : Set₀) { X Y : Set₀} (f : X → Y) :  ((A → X) × (B → X)) → ((A → Y) × (B → Y)) :=
+  λ g : (A → X) × (B → X) , pair (f ∘ g.1) (f ∘ g.2)  
 
 definition  Sum (A B : Set₀) : Type.{0} := 
   Σ(α : preSum A B), Π(X Y : Set₀), Π(f : X → Y), α Y ∘ (sum_functor A B f) ~ f ∘ α X
 
+definition setSum (A B : Set₀) : Set₀ :=
+  trunctype.mk (Sum A B) !is_trunc_sigma
 
-
-
-
-/--
-
-definition  or (A B : Prop.{0}) : Prop.{0} :=
- trunctype.mk (Or A B) (Or_is_prop A B)
-
-definition eq_of_iff (p q : Type.{0}) (h : is_prop p) (k : is_prop q) 
-           : (p ↔ q) → (p = q) := 
+definition Incl_left (A B : Set₀) (a : A): Sum A B :=
   begin
-  intro a, apply ua, cases a with f g, fapply equiv.MK, 
-  exact f, exact g, intro b, apply is_prop.elim,
-  intro a, apply is_prop.elim
+   fapply sigma.mk,
+  { intro X, intro g, exact g.1 a},
+  { intros X Y f, intro g, esimp}   
   end
 
--- check trunc -1 (A + B)
-
-definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
+definition Incl_right (A B : Set₀) (b : B): Sum A B :=
   begin
-  fapply eq_of_iff, exact Or_is_prop A B, apply is_trunc_trunc, fapply iff.intro, 
-  {intro p, apply p (trunctype.mk (trunc -1 (A + B)) !is_trunc_trunc),
-   {esimp, intro a, apply tr, exact inl a},
-   {esimp, intro b, apply tr, exact inr b} },
-  {intro x, induction x with s, cases s with a b, 
-   {intro,intro f g, exact f a },
-   {intro,intro f g, exact g b } }
+   fapply sigma.mk,
+  { intro X, intro g, exact g.2 b},
+  { intros X Y f, intro g, esimp}   
   end
 
---/
+definition coPair (A B X : Set₀) (f : A → X) (g : B → X) (c : Sum A B) : X := 
+ c.1 X (pair f g)
+
+
+
