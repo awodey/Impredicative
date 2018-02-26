@@ -12,51 +12,54 @@ abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
 abbreviation UGpd  := trunctype.{0} 1 
 
+definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
+  :  trunctype.{0} n
+  := trunctype.mk (∀ x, B x) (is_trunc_pi B n)
+notation `π` binders `,` r:(scoped P, tprod P) := r
+definition tto {n : ℕ₋₂} (A B : trunctype.{0} n) : trunctype.{0} n
+  := π x : A, B
+reserve infix ` ⇒ `:21
+infix ` ⇒ ` := tto
+
+axioms (A : Type) (B : A → UPrp)
+--check P x : A, B x
+
+
 /- Encoding of Propostions -/
 
 /- conjunction of propositions -/
 
-definition And (A B : UPrp) : U := Π{X : UPrp}, (A → B → X) → X
-definition And_is_prop (A B : UPrp) : is_prop (And A B) 
-  := is_prop.mk (λ f g, eq_of_homotopy (λ h, is_prop.elim (f h) (g h)))
-definition and (A B : UPrp) : UPrp := trunctype.mk (And A B) (And_is_prop A B)
+definition and (A B : UPrp) : UPrp := π X : UPrp, (A ⇒ (B ⇒ X)) ⇒ X
 definition con {A B : UPrp} (p : A) (q : B) :  and A B := λ X f, f p q
-definition and_rec {A B C : UPrp} (f : A → B → C)  (p : and A B) : C := p f
-definition and_beta {A B C : UPrp} (f : A → B → C) (a : A) (b : B) 
+definition and_rec {A B C : UPrp} (f : A ⇒ (B ⇒ C))  (p : and A B) : C := p C f
+definition and_beta {A B C : UPrp} (f : A ⇒ (B ⇒ C)) (a : A) (b : B) 
   : and_rec f (@con A B a b) = f a b := rfl
-definition and_eta {A B C : UPrp} (f : and A B → C)
+definition and_eta {A B C : UPrp} (f : and A B ⇒ C)
   :  f = and_rec (λ a b, f (@con A B a b)) 
   := eq_of_homotopy (λ x, is_prop.elim _ _)
-definition and_univ_prop {A B C : UPrp} : (and A B → C) ≃ (A → B → C) 
+definition and_univ_prop {A B C : UPrp} : (and A B ⇒ C) ≃ (A ⇒ (B ⇒ C)) 
   := equiv_of_is_prop (λ f a b, f (@con A B a b)) and_rec
 definition and_prl {A B : UPrp} (p : and A B) : A := p (λ x y, x)
 definition and_prr {A B : UPrp} (p : and A B) : B := p (λ x y, y)
 
 /- Disjunction of propositions -/
 
-definition Or (A B : UPrp) : U := Π{X : UPrp}, (A → X) → (B → X) → X
-definition Or_is_prop (A B : UPrp) : is_prop (Or A B) 
-  := is_prop.mk (λ x y, eq_of_homotopy3 (λ a b c, is_prop.elim _ _))
-definition or (A B : UPrp) : UPrp := trunctype.mk (Or A B) (Or_is_prop A B)
+definition or (A B : UPrp) : UPrp := π X : UPrp, (A ⇒ X) ⇒ ((B ⇒ X) ⇒ X)
 definition or_inl {A B : UPrp} (a : A) : or A B := λX f g, f a
 definition or_inr {A B : UPrp} (b : B) : or A B := λX f g, g b
-definition or_rec {A B C : UPrp} (f : A → C) (g : B → C) (v : or A B) : C 
-  := v f g
-definition or_beta_l {A B C : UPrp} (f : A → C) (g : B → C) (a : A)
+definition or_rec {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (v : or A B) : C 
+  := v C f g
+definition or_beta_l {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (a : A)
   : or_rec f g (@or_inl A B a) = f a := rfl
-definition or_beta_r {A B C : UPrp} (f : A → C) (g : B → C) (b : B)
+definition or_beta_r {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (b : B)
   : or_rec f g (@or_inr A B b) = g b := rfl
-definition or_eta {A B C : UPrp} (h : or A B → C)
+definition or_eta {A B C : UPrp} (h : or A B ⇒ C)
   : h = or_rec (λ a, h (@or_inl A B a)) (λ b, h (@or_inr A B b)) 
   := eq_of_homotopy (λ v, is_prop.elim _ _)
--- definition or_univ_prop {A B C : UPrp} 
---   : (or A B → C) ≃ and (trunctype.mk (A → C) _) (trunctype.mk (B → C) _)
---   := begin 
---     apply equiv_of_is_prop, intros h X k, exact k (h∘or_inl) (h∘or_inr),
--- intros p v, apply or_rec (p (λ x y, x)) (p (λ x y, y)), intros X f g, exact v f g,
--- end -- WTF??
-
---print axioms or_is_disjunction
+definition or_univ_prop {A B C : UPrp} 
+  :  (or A B ⇒ C) ≃ and (A ⇒ C) (B ⇒ C)
+  := equiv_of_is_prop (λ h X k, k (h ∘ or_inl) (h ∘ or_inr))
+     (λ p v, v C (p _ (λ x y, x)) (p _ (λ x y, y)))
 
 /- Propositional truncation of small types -/
 
