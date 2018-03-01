@@ -298,6 +298,3 @@ definition Incl_right (A B : Set₀) (b : B): Sum A B :=
 
 definition coPair (A B X : Set₀) (f : A → X) (g : B → X) (c : Sum A B) : X := 
  c.1 X (pair f g)
-
-
-
