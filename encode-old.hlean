@@ -48,8 +48,6 @@ definition or_is_disjunction (A B : Prop.{0}) : (or A B) = trunc -1 (A + B) :=
    {intro,intro f g, exact g b } }
   end
 
--- print axioms or_is_disjunction
-
 /- Propositional truncation of small types -/
 
 definition  PropTrunc (A : Type.{0}) : Type.{0} := 
