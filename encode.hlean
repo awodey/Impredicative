@@ -156,15 +156,21 @@ definition Product_rec {A B C : Set} (f : A ⇒ B ⇒ C) (p : Product A B) : C
 -- beta rule
 definition Product_beta {A B C : USet} (f : A → B → C) (a : A) (b : B) 
   :  Product_rec f (Pair a b) = f a b := rfl
+-- weak eta rule
+definition Product_weak_eta {A B : USet} (x : Product A B)
+  :  x = Product_rec Pair x
+  := begin induction x with p n, refine _ ⬝ (n id Pair)⁻¹, fapply sigma_eq, 
+     apply eq_of_homotopy2, intros X f, exact (n (Product_rec f) Pair), 
+     apply is_prop.elimo end
+-- commuting conversion
+definition Product_com_con {A B C D : USet} (f : A → B → C) (g : C → D)
+  :  g ∘ Product_rec f = Product_rec (λ a b, g (f a b))
+  := begin apply eq_of_homotopy, intro x, induction x with x n, symmetry, 
+  apply n end
 -- eta rule
 definition Product_eta {A B C : USet} (g : Product A B → C) 
   :  g = Product_rec (λ a b, g (Pair a b))
-  := begin
-  apply eq_of_homotopy, intro p, induction p with p n, unfold Product_rec,
-  refine _ ⬝ (n g Pair)⁻¹, esimp, apply ap g, fapply sigma_eq, esimp,
-  apply eq_of_homotopy2, intros X f, exact (n (Product_rec f) Pair), 
-apply is_prop.elimo,
-  end
+  := eq_of_homotopy (λ x, ap g (Product_weak_eta x)) ⬝ Product_com_con Pair g
 -- universal property
 definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
   := begin
@@ -172,6 +178,12 @@ fconstructor,intro f a b, apply f, exact Pair a b, intro f, symmetry,
 apply Product_eta, intro g, apply eq_of_homotopy2, intro a b, 
 apply Product_beta, intro f, apply is_prop.elim,
 end
+-- -- induction principle
+-- definition product_ind {A B : USet} {P : Product A B → U} [K : Π x, is_prop (P x)]
+-- (H : Π (a : A) (b : B), P (Pair a b)) (x : Product A B) : P x 
+--   := begin
+-- exact sorry 
+-- end
 
 /- Sum A + B of sets -/
 
@@ -199,8 +211,9 @@ definition Sum_beta_l {A B X : USet} (f : A → X) (g : B → X)
 definition Sum_beta_r {A B X : USet} (f : A → X) (g : B → X)
   : Sum_rec f g ∘ Sum_inr = g := rfl
 -- weak eta
-definition Sum_weak_eta {A B : USet} : Sum_rec Sum_inl Sum_inr = @id (Sum A B) 
-  := begin apply eq_of_homotopy, intro α, induction α with α p, fapply sigma_eq, 
+definition Sum_weak_eta {A B : USet} (x : Sum A B) 
+  : Sum_rec Sum_inl Sum_inr x = x
+  := begin induction x with α p, fapply sigma_eq, 
      apply eq_of_homotopy3, intro X f g,  unfold Sum_rec, apply p, 
      apply is_prop.elimo end
 -- commuting conversion 
@@ -210,19 +223,24 @@ definition Sum_com_con {A B X Y : USet} (f : A → X) (g : B → X) (h : X → Y
 -- strong eta
 definition Sum_eta {A B X : USet} (h : Sum A B → X) 
   :  h = Sum_rec (h∘Sum_inl) (h∘Sum_inr)
-  := ap (compose h) Sum_weak_eta⁻¹ ⬝ !Sum_com_con
--- universal property
--- definition Sum_univ_prop {A B X : USet} 
---   :  (Sum A B ⇒ X) ≃ (Product (A ⇒ X) (B ⇒ X))
---   := begin
--- fconstructor,intro h, fconstructor, intro X k, apply k, exact h ∘ Sum_inl,
--- exact h ∘ Sum_inr, intros Y Z k l, reflexivity, fconstructor,
--- intro, apply Sum_rec, exact Proj1 a, exact Proj2 a,intro p, esimp,
--- induction p with p n, esimp,
--- fapply sigma_eq, esimp, apply eq_of_homotopy2,intros X h, esimp, 
--- unfold product_functor at n, unfold homotopy at n,
--- apply n,
--- end
+  := eq_of_homotopy (λ x, ap h (Sum_weak_eta x)⁻¹) ⬝ Sum_com_con _ _ _
+--universal property
+definition Sum_univ_prop {A B X : USet} 
+  :  (Sum A B ⇒ X) ≃ (Product (A ⇒ X) (B ⇒ X))
+  := begin
+fapply equiv.MK,
+
+intro h, apply Pair,
+exact h ∘ Sum_inl, exact h ∘ Sum_inr, 
+intro, 
+apply Sum_rec, 
+exact Proj1 a, exact Proj2 a,
+intro p, esimp,
+
+refine product_ind _ p,
+intros, clear p, reflexivity,
+intro, apply eq_of_homotopy, intro,
+end
 
 /- Natural numbers -/
 
