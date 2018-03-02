@@ -13,21 +13,25 @@ abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
 abbreviation UGpd  := trunctype.{0} 1 
 
+-- truncated products
 definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
   :  trunctype.{0} n
   := trunctype.mk (∀ x, B x) (is_trunc_pi B n)
 notation `π` binders `,` r:(scoped P, tprod P) := r
+
+-- trucated arrows
 definition tto {n : ℕ₋₂} (A : Type) (B : trunctype.{0} n) : trunctype.{0} n
   := π x : A, B
 reserve infixr ` ⇒ `:21
 infixr ` ⇒ ` := tto
+
 -- definition tsig {n : ℕ₋₂} {A : USet} (B : A → U) [H : Π a, is_prop (B a)] : USet
 --   := trunctype.mk (sigma B) !is_trunc_sigma
 -- notation `σ` binders `,` r:(scoped P, tsig P) := r
 
 /- Encoding of Propostions -/
 
-/- conjunction of propositions -/
+/- Conjunction of propositions -/
 
 definition and (A B : UPrp) : UPrp := π X:UPrp, (A ⇒ B ⇒ X) ⇒ X
 
@@ -122,19 +126,28 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 
 /- Encoding of a set -/
 
-definition PreSetEncode (A : USet) : U := 
-  Π(X : USet), (A → X) → X
+-- System F style encoding
+definition preSetEncode (A : USet) : USet := 
+  π(X : USet),  (A ⇒ X) ⇒ X
 
+-- postcomposition
 definition postcompose (A : USet) {X Y : USet} (f : X → Y) 
-  :  (A → X) → (A → Y) := λ g : A → X, f ∘ g 
+  :  (A → X) → (A → Y) := λ g : A → X, f ∘ g  
 
-notation f `^` A := postcompose A f 
+-- naturality condition
+definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
+  := π (X Y : USet) (f : X → Y),
+      Prop.mk (α Y ∘ (postcompose A f) = f ∘ α X) !is_trunc_eq 
 
-definition  SetEncode (A : USet) : U 
-  := Σ(α : PreSetEncode A), Π(X Y : USet), Π(f : X → Y), α Y ∘ (f^A) ~ f ∘ α X
+--refined encoding
+definition  SetEncode (A : USet) : USet 
+  := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
+-- := Set.mk (sigma (@nSetEncode A)) !is_trunc_sigma
 
-definition eta (A : USet) (a : A) : SetEncode A 
-  := ⟨λ X f, f a, λ X Y f g, refl ((f ^ A) g a)⟩
+-- constructor
+definition eta {A : USet} (a : A) : SetEncode A 
+  :=   ⟨λ X f, f a, sorry⟩
+--   :=   ⟨λ X f, f a, λ X Y f g, refl ((postcompose A f) g a)⟩
 
 definition ispropelim := @is_prop.elimo
 
