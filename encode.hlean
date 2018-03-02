@@ -146,8 +146,7 @@ definition  SetEncode (A : USet) : USet
 
 -- constructor
 definition eta {A : USet} (a : A) : SetEncode A 
-  :=   ⟨λ X f, f a, sorry⟩
---   :=   ⟨λ X f, f a, λ X Y f g, refl ((postcompose A f) g a)⟩
+  := ⟨λ X f, f a, λ X Y f, rfl⟩
 
 definition ispropelim := @is_prop.elimo
 
