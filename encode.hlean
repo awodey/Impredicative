@@ -139,27 +139,27 @@ definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp
   := π (X Y : USet) (f : X → Y),
       Prop.mk (α Y ∘ (postcompose A f) = f ∘ α X) !is_trunc_eq 
 
+ 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
   := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
--- := Set.mk (sigma (@nSetEncode A)) !is_trunc_sigma
 
 -- constructor
-definition eta {A : USet} (a : A) : SetEncode A 
-  := ⟨λ X f, f a, λ X Y f, rfl⟩
+definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f, rfl⟩
 
 definition ispropelim := @is_prop.elimo
 
 /- The "Basic Lemma" -/
 
-definition eta_is_equiv (A : USet) : is_equiv (eta A) :=
+definition eta_is_equiv (A : USet) : is_equiv (@eta A) :=
   begin
  fapply adjointify, 
  {intro e, exact e.1 A id },
  {intro e, fapply sigma_eq, unfold eta, apply eq_of_homotopy, 
    intro X, apply eq_of_homotopy, intro f,
-   note p:= e.2 A X f, symmetry, exact p id, apply ispropelim},
-   intro a, reflexivity 
+induction e with e n, symmetry, 
+exact ap (λ f, f id) (n A X f), apply ispropelim},
+intro, reflexivity
 end
 
 /- Product A × B of sets -/
@@ -216,11 +216,10 @@ definition Product_eta {A B C : USet} (g : Product A B → C)
 
 -- universal property
 definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
-  := begin
-fconstructor,intro f a b, apply f, exact Pair a b, intro f, symmetry, 
-apply Product_eta, intro g, apply eq_of_homotopy2, intro a b, 
-apply Product_beta, intro f, apply is_prop.elim,
-end
+  := adjointify Product_rec 
+                (λ f a b, f (Pair a b))
+                (λ f, (Product_eta f)⁻¹)
+                (λ g, eq_of_homotopy2 (Product_beta g))
 
 -- -- induction principle
 -- definition product_ind {A B : USet} {P : Product A B → U} [K : Π x, is_prop (P x)]
