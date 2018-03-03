@@ -151,35 +151,36 @@ definition ispropelim := @is_prop.elimo
 
 /- The "Basic Lemma" -/
 
-definition eta_is_equiv (A : USet) : is_equiv (@eta A) :=
-  begin
- fapply adjointify, 
- {intro e, exact e.1 A id },
- {intro e, fapply sigma_eq, unfold eta, apply eq_of_homotopy, 
-   intro X, apply eq_of_homotopy, intro f,
-induction e with e n, symmetry, 
-exact ap (λ f, f id) (n A X f), apply ispropelim},
-intro, reflexivity
+definition eta_is_equiv (A : USet) : is_equiv (@eta A) 
+  := begin 
+    fapply adjointify, 
+           {λ e, e.1 A id },
+           {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f, 
+            induction e with e n, symmetry, exact ap (λ f, f id) (n A X f), 
+            apply ispropelim},
+           {λ x, rfl}
 end
 
 /- Product A × B of sets -/
 
+-- System F encoding
 definition  preProduct (A B : USet) : USet :=
   π (X : USet), (A ⇒ B ⇒ X) ⇒ X
 
-definition product_functor (A B : USet) {X Y : USet} (f : X → Y) 
-  :  (A → B → X) → (A → B → Y) 
-  := λ g : A → B → X, λ a : A, f ∘ (g a)
+-- naturality condition
+definition nProduct {A B : USet} (α : preProduct A B) : UPrp 
+  := π(X Y : USet) (f : X → Y) (h : A ⇒ B ⇒ X), 
+         Prop.mk (f (α X h) = α Y (λ a, f ∘ h a)) !is_trunc_eq
 
+-- refined encoding
 definition  Product (A B : USet) : USet 
   := trunctype.mk 
-       (Σ(α : preProduct A B), Π{X Y : USet} (f : X → Y), 
-         (α Y) ∘ (product_functor A B f) ~ f ∘ α X)
+       (Σ(α : preProduct A B), nProduct α)
        !is_trunc_sigma
 
 -- constructor
 definition Pair {A B : USet} (a : A) (b : B) : Product A B 
-  := ⟨λ X f, f a b, λ X Y f g, refl (product_functor A B f g a b)⟩
+  := ⟨λ X f, f a b, λ X Y f g, rfl⟩
 
 -- eliminators
 definition Proj1 {A B : USet} : Product A B → A 
@@ -196,29 +197,36 @@ definition Product_rec {A B C : Set} (f : A ⇒ B ⇒ C) (p : Product A B) : C
 definition Product_beta {A B C : USet} (f : A → B → C) (a : A) (b : B) 
   :  Product_rec f (Pair a b) = f a b := rfl
 
+-- set_option pp.coercions false -- doesn't seem to do anything
 -- weak eta rule
 definition Product_weak_eta {A B : USet} (x : Product A B)
-  :  x = Product_rec Pair x
-  := begin induction x with p n, refine _ ⬝ (n id Pair)⁻¹, fapply sigma_eq, 
-     apply eq_of_homotopy2, intros X f, exact (n (Product_rec f) Pair), 
-     apply is_prop.elimo end
+  :  Product_rec Pair x = x
+  := begin induction x with p n, fapply sigma_eq, apply eq_of_homotopy2, 
+     intros X f, exact (n _ _ (Product_rec f) Pair), apply is_prop.elimo end
+-- why doesn't this work?
+-- sigma_eq (eq_of_homotopy2 (λ X f, x.2 _ _ (Product_rec f) Pair))
+--               !is_prop.elimo 
 
 -- commuting conversion
 definition Product_com_con {A B C D : USet} (f : A → B → C) (g : C → D)
-  :  g ∘ Product_rec f = Product_rec (λ a b, g (f a b))
-  := begin apply eq_of_homotopy, intro x, induction x with x n, symmetry, 
-  apply n end
+  :  Product_rec (λ a b, g (f a b)) = g ∘ Product_rec f
+  := (eq_of_homotopy (λ x, x.2 C D g f))⁻¹
 
--- eta rule
+-- strong eta rule
 definition Product_eta {A B C : USet} (g : Product A B → C) 
-  :  g = Product_rec (λ a b, g (Pair a b))
-  := eq_of_homotopy (λ x, ap g (Product_weak_eta x)) ⬝ Product_com_con Pair g
+  :  Product_rec (λ a b, g (Pair a b)) = g
+  := (Product_com_con Pair g) ⬝ eq_of_homotopy (λ x, ap g (Product_weak_eta x))
 
+-- classical eta rule
+definition Product_classical_eta {A B : USet} (p : Product A B) 
+  :   Pair (Proj1 p) (Proj2 p) = p
+  :=  ap (λ f, f p) (Product_eta _)⁻¹ ⬝ (Product_weak_eta p)
+        
 -- universal property
 definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
   := adjointify Product_rec 
                 (λ f a b, f (Pair a b))
-                (λ f, (Product_eta f)⁻¹)
+                Product_eta
                 (λ g, eq_of_homotopy2 (Product_beta g))
 
 -- -- induction principle
@@ -268,33 +276,23 @@ definition Sum_weak_eta {A B : USet} (x : Sum A B)
      apply eq_of_homotopy3, intro X f g,  unfold Sum_rec, apply p, 
      apply is_prop.elimo end
 
--- commuting conversion 
+--commuting conversion 
 definition Sum_com_con {A B X Y : USet} (f : A → X) (g : B → X) (h : X → Y) 
-  :  h ∘ Sum_rec f g = Sum_rec (h ∘ f) (h ∘ g)
-  := begin apply eq_of_homotopy, intro α, induction α with α p, apply p end
+  :  Sum_rec (h ∘ f) (h ∘ g) = h ∘ Sum_rec f g
+  := begin apply eq_of_homotopy, intro α, induction α with α p, symmetry, apply p end
 
 -- strong eta
 definition Sum_eta {A B X : USet} (h : Sum A B → X) 
-  :  h = Sum_rec (h∘Sum_inl) (h∘Sum_inr)
-  := eq_of_homotopy (λ x, ap h (Sum_weak_eta x)⁻¹) ⬝ Sum_com_con _ _ _
+  :  Sum_rec (h∘Sum_inl) (h∘Sum_inr) = h
+  := !Sum_com_con ⬝ eq_of_homotopy (λ x, ap h (Sum_weak_eta x))
 
 --universal property
 definition Sum_univ_prop {A B X : USet} 
   :  (Sum A B ⇒ X) ≃ (Product (A ⇒ X) (B ⇒ X))
-  := begin
-fapply equiv.MK,
-
-intro h, apply Pair,
-exact h ∘ Sum_inl, exact h ∘ Sum_inr, 
-intro, 
-apply Sum_rec, 
-exact Proj1 a, exact Proj2 a,
-intro p, esimp,
-
-refine product_ind _ p,
-intros, clear p, reflexivity,
-intro, apply eq_of_homotopy, intro,
-end
+  := equiv.MK (λ h, Pair (h ∘ Sum_inl) (h ∘ Sum_inr))
+              (λ a, Sum_rec (Proj1 a) (Proj2 a))
+              Product_classical_eta
+              Sum_eta
 
 /- Natural numbers -/
 
@@ -331,3 +329,6 @@ definition Nat_beta' {X : USet} (h : X → X) (x : X) (n : Nat)
   :  Nat_rec h x (S n) = h (Nat_rec h x n) 
   := begin induction n, reflexivity end
 
+definition Nat_weak_eta (n : Nat) : Nat_rec S Z n = n
+  := begin
+end
