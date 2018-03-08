@@ -243,7 +243,7 @@ definition  preSum (A B : USet) : USet :=
 
 -- naturality condition
 definition nSum {A B : USet} (a : preSum A B) : UPrp 
-  := π (X Y : USet) (f : X → Y) (h : A → X) (k : B → X), 
+  := π(X Y : USet) (f : X → Y) (h : A → X) (k : B → X), 
      Prop.mk (f(a X h k) = a Y (f∘h) (f∘k)) !is_trunc_eq
 
 -- refined encoding
@@ -300,7 +300,7 @@ definition preNat : USet := π X : USet, (X ⇒ X) ⇒ X ⇒ X
 
 -- naturality condition
 definition nNat (α : preNat) : UPrp 
-  := π(X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
+  := π (X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
          f x = y ⇒ f ∘ h = k ∘ f ⇒ Prop.mk (f (α X h x) = α Y k y) !is_trunc_eq
 
 -- refined encoding
@@ -311,11 +311,11 @@ definition Z : Nat := ⟨λ X f x, x, λ X Y x y h k f u v, u⟩
 
 definition S (n : Nat) : Nat
   := begin
- induction n with n p, fconstructor, λ X h x, h (n X h x),
- intros X Y x y h k f u v,
- refine (ap (λ f, f (n X h x)) v) ⬝ _,
- apply ap k, apply p, exact u, assumption,
- end
+  induction n with n p, fconstructor, λ X h x, h (n X h x),
+  intros X Y x y h k f u v,
+  refine (ap (λ f, f (n X h x)) v) ⬝ _,
+  apply ap k, apply p, exact u, assumption,
+  end
 
 -- recursor
 definition Nat_rec {X : USet} (h : X → X) (x : X) (n : Nat) : X := n.1 X h x
