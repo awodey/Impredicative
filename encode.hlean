@@ -139,7 +139,6 @@ definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp
   := π (X Y : USet) (f : X → Y),
       Prop.mk (α Y ∘ (postcompose A f) = f ∘ α X) !is_trunc_eq 
 
- 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
   := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
@@ -249,7 +248,7 @@ definition nSum {A B : USet} (a : preSum A B) : UPrp
 
 -- refined encoding
 definition Sum (A B : USet) : USet 
-  := Set.mk (sigma (@nSum A B)) !is_trunc_sigma
+  := Set.mk (Σ(α : preSum A B), nSum α) !is_trunc_sigma
 
 -- constructors
 definition Sum_inl {A B : USet} (a : A) : Sum A B 
