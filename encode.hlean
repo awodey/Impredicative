@@ -1,3 +1,6 @@
+-- Impredicate encodings of (higher) inductive types
+-- Formalization by Steve Awodey and Jonas Frey
+
 import imp_prop_trunc 
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
