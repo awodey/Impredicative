@@ -5,7 +5,6 @@ import imp_prop_trunc
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
 
-
 attribute trunc.rec [recursor] 
 
 definition my.inv (A : Type)(x y : A)(p : x = y) : y = x :=
@@ -230,13 +229,6 @@ definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
                 (λ f a b, f (Pair a b))
                 Product_eta
                 (λ g, eq_of_homotopy2 (Product_beta g))
-
--- -- induction principle
--- definition product_ind {A B : USet} {P : Product A B → U} [K : Π x, is_prop (P x)]
--- (H : Π (a : A) (b : B), P (Pair a b)) (x : Product A B) : P x 
---   := begin
--- exact sorry 
--- end
 
 /- Sum A + B of sets -/
 
