@@ -1,7 +1,9 @@
+-- Impredicate encodings of (higher) inductive types
+-- Formalization by Steve Awodey and Jonas Frey
+
 import imp_prop_trunc 
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
-
 
 attribute trunc.rec [recursor] 
 
@@ -139,7 +141,6 @@ definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp
   := π (X Y : USet) (f : X → Y),
       Prop.mk (α Y ∘ (postcompose A f) = f ∘ α X) !is_trunc_eq 
 
- 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
   := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
@@ -250,13 +251,6 @@ definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
                 Product_eta
                 (λ g, eq_of_homotopy2 (Product_beta g))
 
--- -- induction principle
--- definition product_ind {A B : USet} {P : Product A B → U} [K : Π x, is_prop (P x)]
--- (H : Π (a : A) (b : B), P (Pair a b)) (x : Product A B) : P x 
---   := begin
--- exact sorry 
--- end
-
 /- Sum A + B of sets -/
 
 -- System F encoding
@@ -265,12 +259,12 @@ definition  preSum (A B : USet) : USet :=
 
 -- naturality condition
 definition nSum {A B : USet} (a : preSum A B) : UPrp 
-  := π (X Y : USet) (f : X → Y) (h : A → X) (k : B → X), 
+  := π(X Y : USet) (f : X → Y) (h : A → X) (k : B → X), 
      Prop.mk (f(a X h k) = a Y (f∘h) (f∘k)) !is_trunc_eq
 
 -- refined encoding
 definition Sum (A B : USet) : USet 
-  := Set.mk (sigma (@nSum A B)) !is_trunc_sigma
+  := Set.mk (Σ(α : preSum A B), nSum α) !is_trunc_sigma
 
 -- constructors
 definition Sum_inl {A B : USet} (a : A) : Sum A B 
@@ -322,7 +316,7 @@ definition preNat : USet := π X : USet, (X ⇒ X) ⇒ X ⇒ X
 
 -- naturality condition
 definition nNat (α : preNat) : UPrp 
-  := π(X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
+  := π (X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
          f x = y ⇒ f ∘ h = k ∘ f ⇒ Prop.mk (f (α X h x) = α Y k y) !is_trunc_eq
 
 -- refined encoding
