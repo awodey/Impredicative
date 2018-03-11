@@ -5,10 +5,8 @@ import imp_prop_trunc
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
 
+-- what is that good for?
 attribute trunc.rec [recursor] 
-
-definition my.inv (A : Type)(x y : A)(p : x = y) : y = x :=
-  eq.rec (eq.refl x) p
 
 abbreviation U     := Type.{0} 
 abbreviation UPrp  := trunctype.{0} -1
@@ -26,6 +24,12 @@ definition tto {n : ℕ₋₂} (A : Type) (B : trunctype.{0} n) : trunctype.{0} 
   := π x : A, B
 reserve infixr ` ⇒ `:21
 infixr ` ⇒ ` := tto
+
+-- truncated equality
+definition teq {n : ℕ₋₂} {A : trunctype.{0} (n.+1)} (x y : A) : trunctype.{0} n
+  := trunctype.mk (x=y) !is_trunc_eq
+reserve infix ` == `:50
+infix ` == ` := teq
 
 -- definition tsig {n : ℕ₋₂} {A : USet} (B : A → U) [H : Π a, is_prop (B a)] : USet
 --   := trunctype.mk (sigma B) !is_trunc_sigma
@@ -132,56 +136,28 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 definition preSetEncode (A : USet) : USet := 
   π(X : USet),  (A ⇒ X) ⇒ X
 
--- postcomposition
-definition postcompose (A : USet) {X Y : USet} (f : X → Y) 
-  :  (A → X) → (A → Y) := λ g : A → X, f ∘ g  
-
 -- naturality condition
 definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
-  := π (X Y : USet) (f : X → Y),
-      Prop.mk (α Y ∘ (postcompose A f) = f ∘ α X) !is_trunc_eq 
+  := π (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
   := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
 
 -- constructor
-definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f, rfl⟩
+definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
 
 definition ispropelim := @is_prop.elimo
 
 /- The "Basic Lemma" -/
 
--- set_option pp.implicit true
--- set_option pp.beta     true
--- set_option pp.abbreviations true
--- check @ap
 definition eta_is_equiv (A : USet) : is_equiv (@eta A) 
-  := adjointify 
-       eta 
-       (λ e, e.1 A id)
-       (λ e, sigma_eq 
-               (eq_of_homotopy2 (λ X f, sigma.rec _ _))
-               (is_prop.elimo
-                 (eq_of_homotopy2 
-                   (λ X f, sigma.rec
-   (λ e n, (@ap _ _ 
-                                          (λ f, f id) 
-                                          (e X ∘ postcompose A f)
-                _ 
-                                          (n A X f))⁻¹)
-   e))
-                 _ _))
-         (λ x, rfl)
--- begin 
---     fapply adjointify, 
---            {λ e, e.1 A id },
---            {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f, 
---             induction e with e n, symmetry, exact ap (λ f, f id) (n A X f), 
---             apply ispropelim},
---            {λ x, rfl}
--- end
--- print eta_is_equiv
+  := begin fapply adjointify,
+           {λ e, e.1 A id},
+           {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f,
+            symmetry, apply e.2, apply ispropelim},
+           {λ x, rfl}
+     end
 
 /- Product A × B of sets -/
 
@@ -191,8 +167,7 @@ definition  preProduct (A B : USet) : USet :=
 
 -- naturality condition
 definition nProduct {A B : USet} (α : preProduct A B) : UPrp 
-  := π(X Y : USet) (f : X → Y) (h : A ⇒ B ⇒ X), 
-         Prop.mk (f (α X h) = α Y (λ a, f ∘ h a)) !is_trunc_eq
+  := π(X Y : USet) (f : X → Y) (h : A ⇒ B ⇒ X), f (α X h) == α Y (λ a, f ∘ h a)
 
 -- refined encoding
 definition  Product (A B : USet) : USet 
@@ -219,15 +194,11 @@ definition Product_rec {A B C : Set} (f : A ⇒ B ⇒ C) (p : Product A B) : C
 definition Product_beta {A B C : USet} (f : A → B → C) (a : A) (b : B) 
   :  Product_rec f (Pair a b) = f a b := rfl
 
--- set_option pp.coercions false -- doesn't seem to do anything
 -- weak eta rule
 definition Product_weak_eta {A B : USet} (x : Product A B)
   :  Product_rec Pair x = x
   := begin induction x with p n, fapply sigma_eq, apply eq_of_homotopy2, 
      intros X f, exact (n _ _ (Product_rec f) Pair), apply is_prop.elimo end
--- why doesn't this work?
--- sigma_eq (eq_of_homotopy2 (λ X f, x.2 _ _ (Product_rec f) Pair))
---               !is_prop.elimo 
 
 -- commuting conversion
 definition Product_com_con {A B C D : USet} (f : A → B → C) (g : C → D)
@@ -259,8 +230,7 @@ definition  preSum (A B : USet) : USet :=
 
 -- naturality condition
 definition nSum {A B : USet} (a : preSum A B) : UPrp 
-  := π(X Y : USet) (f : X → Y) (h : A → X) (k : B → X), 
-     Prop.mk (f(a X h k) = a Y (f∘h) (f∘k)) !is_trunc_eq
+  := π(X Y : USet) (f : X→Y) (h : A→X) (k : B→X), f(a X h k) == a Y (f∘h) (f∘k)
 
 -- refined encoding
 definition Sum (A B : USet) : USet 
@@ -317,7 +287,7 @@ definition preNat : USet := π X : USet, (X ⇒ X) ⇒ X ⇒ X
 -- naturality condition
 definition nNat (α : preNat) : UPrp 
   := π (X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
-         f x = y ⇒ f ∘ h = k ∘ f ⇒ Prop.mk (f (α X h x) = α Y k y) !is_trunc_eq
+         f x = y ⇒ f ∘ h = k ∘ f ⇒ f (α X h x) == α Y k y
 
 -- refined encoding
 definition Nat : USet := Set.mk (Σ α : preNat, nNat α) !is_trunc_sigma
@@ -359,5 +329,4 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 definition preS1 : UGpd := π (X : UGpd) (x : X), x = x ⇒ X
 
 definition nS1 (α : preS1) : USet 
-  := π (X Y : UGpd) (f : X → Y) (x : X) (p : x = x), trunctype.mk 
-       (f (α X x p) = α Y (f x) (ap f p)) !is_trunc_eq
+  := π (X Y : UGpd) (f:X→Y) (x:X) (p:x=x), f (α X x p) == α Y (f x) (ap f p)
