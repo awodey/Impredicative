@@ -151,15 +151,36 @@ definition ispropelim := @is_prop.elimo
 
 /- The "Basic Lemma" -/
 
+-- set_option pp.implicit true
+-- set_option pp.beta     true
+-- set_option pp.abbreviations true
+-- check @ap
 definition eta_is_equiv (A : USet) : is_equiv (@eta A) 
-  := begin 
-    fapply adjointify, 
-           {λ e, e.1 A id },
-           {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f, 
-            induction e with e n, symmetry, exact ap (λ f, f id) (n A X f), 
-            apply ispropelim},
-           {λ x, rfl}
-end
+  := adjointify 
+       eta 
+       (λ e, e.1 A id)
+       (λ e, sigma_eq 
+               (eq_of_homotopy2 (λ X f, sigma.rec _ _))
+               (is_prop.elimo
+                 (eq_of_homotopy2 
+                   (λ X f, sigma.rec
+   (λ e n, (@ap _ _ 
+                                          (λ f, f id) 
+                                          (e X ∘ postcompose A f)
+                _ 
+                                          (n A X f))⁻¹)
+   e))
+                 _ _))
+         (λ x, rfl)
+-- begin 
+--     fapply adjointify, 
+--            {λ e, e.1 A id },
+--            {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f, 
+--             induction e with e n, symmetry, exact ap (λ f, f id) (n A X f), 
+--             apply ispropelim},
+--            {λ x, rfl}
+-- end
+-- print eta_is_equiv
 
 /- Product A × B of sets -/
 
@@ -311,24 +332,38 @@ definition Nat : USet := Set.mk (Σ α : preNat, nNat α) !is_trunc_sigma
 definition Z : Nat := ⟨λ X f x, x, λ X Y x y h k f u v, u⟩
 
 definition S (n : Nat) : Nat
-  := begin
- induction n with n p, fconstructor, λ X h x, h (n X h x),
- intros X Y x y h k f u v,
- refine (ap (λ f, f (n X h x)) v) ⬝ _,
- apply ap k, apply p, exact u, assumption,
- end
+  := begin fconstructor, λ X h x, h (n.1 X h x), intros X Y x y h k f u v,
+     refine (ap (λ f, f (n.1 X h x)) v) ⬝ _, apply ap k, apply n.2, exact u, 
+     assumption end
 
 -- recursor
 definition Nat_rec {X : USet} (h : X → X) (x : X) (n : Nat) : X := n.1 X h x
 
 -- beta rules
 definition Nat_beta {X : USet} (h : X → X) (x : X) : Nat_rec h x Z = x := rfl
-
--- this would be definitional if Lean had definitional eta for Sigma.
 definition Nat_beta' {X : USet} (h : X → X) (x : X) (n : Nat) 
-  :  Nat_rec h x (S n) = h (Nat_rec h x n) 
-  := begin induction n, reflexivity end
+  :  Nat_rec h x (S n) = h (Nat_rec h x n) := rfl 
 
 definition Nat_weak_eta (n : Nat) : Nat_rec S Z n = n
-  := begin
-end
+  := begin 
+     induction n with n p, 
+     fapply sigma_eq, apply eq_of_homotopy3, intro X h x, 
+     apply p Nat X Z x S h (Nat_rec h x), reflexivity, apply eq_of_homotopy,
+     intro, reflexivity, apply is_prop.elimo,
+     end
+
+definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h∘f)
+  :  f = Nat_rec h x
+  := begin fapply eq_of_homotopy, intro n, refine (ap f (Nat_weak_eta n))⁻¹ ⬝ _, 
+     unfold Nat_rec, induction n with m k, apply k, assumption, assumption, end
+
+
+/- 1-types -/
+
+/- unit circle -/
+
+definition preS1 : UGpd := π (X : UGpd) (x : X), x = x ⇒ X
+
+definition nS1 (α : preS1) : USet 
+  := π (X Y : UGpd) (f : X → Y) (x : X) (p : x = x), trunctype.mk 
+       (f (α X x p) = α Y (f x) (ap f p)) !is_trunc_eq
