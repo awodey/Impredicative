@@ -5,6 +5,9 @@ import imp_prop_trunc
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
 
+definition n_to_sn {n : ℕ₋₂} (A : trunctype.{0} n) : trunctype.{0} (n+1)
+  := trunctype.mk A !is_trunc_succ
+
 -- what is that good for?
 attribute trunc.rec [recursor] 
 
@@ -12,6 +15,7 @@ abbreviation U     := Type.{0}
 abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
 abbreviation UGpd  := trunctype.{0} 1 
+notation `↑`       := n_to_sn   -- type \u-
 
 -- truncated products
 definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
@@ -31,8 +35,9 @@ definition teq {n : ℕ₋₂} {A : trunctype.{0} (n.+1)} (x y : A) : trunctype.
 reserve infix ` == `:50
 infix ` == ` := teq
 
--- definition tsig {n : ℕ₋₂} {A : USet} (B : A → U) [H : Π a, is_prop (B a)] : USet
---   := trunctype.mk (sigma B) !is_trunc_sigma
+-- truncated sigma
+-- definition tsig {n : ℕ₋₂} {A : trunctype.{0} n} (B : A → trunctype.{0} n)  
+--   : trunctype.{0} n := trunctype.mk (sigma B) !is_trunc_sigma
 -- notation `σ` binders `,` r:(scoped P, tsig P) := r
 
 /- Encoding of Propostions -/
@@ -142,20 +147,22 @@ definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp
 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
-  := Set.mk (Σ(α : preSetEncode A), nSetEncode α) !is_trunc_sigma
+  := trunctype.mk (Σ α : preSetEncode A, (nSetEncode α)) !is_trunc_sigma
 
 -- constructor
 definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
 
-definition ispropelim := @is_prop.elimo
-
 /- The "Basic Lemma" -/
+
+definition helper {A : USet} (x : SetEncode A) : is_prop (nSetEncode x.1)
+  := begin exact _, end
 
 definition eta_is_equiv (A : USet) : is_equiv (@eta A) 
   := begin fapply adjointify,
            {λ e, e.1 A id},
-           {intro e, fapply sigma_eq, apply eq_of_homotopy2, intro X f,
-            symmetry, apply e.2, apply ispropelim},
+           {intro, induction b with b n, fapply sigma_eq, 
+           apply eq_of_homotopy2, intro X f, symmetry, apply n, 
+           apply is_prop.elimo},
            {λ x, rfl}
      end
 
@@ -171,10 +178,8 @@ definition nProduct {A B : USet} (α : preProduct A B) : UPrp
 
 -- refined encoding
 definition  Product (A B : USet) : USet 
-  := trunctype.mk 
-       (Σ(α : preProduct A B), nProduct α)
-       !is_trunc_sigma
-
+  := trunctype.mk (Σ(α : preProduct A B), nProduct α) !is_trunc_sigma
+     
 -- constructor
 definition Pair {A B : USet} (a : A) (b : B) : Product A B 
   := ⟨λ X f, f a b, λ X Y f g, rfl⟩
@@ -234,7 +239,7 @@ definition nSum {A B : USet} (a : preSum A B) : UPrp
 
 -- refined encoding
 definition Sum (A B : USet) : USet 
-  := Set.mk (Σ(α : preSum A B), nSum α) !is_trunc_sigma
+  := trunctype.mk (Σ α : preSum A B, nSum α) !is_trunc_sigma
 
 -- constructors
 definition Sum_inl {A B : USet} (a : A) : Sum A B 
@@ -290,7 +295,7 @@ definition nNat (α : preNat) : UPrp
          f x = y ⇒ f ∘ h = k ∘ f ⇒ f (α X h x) == α Y k y
 
 -- refined encoding
-definition Nat : USet := Set.mk (Σ α : preNat, nNat α) !is_trunc_sigma
+definition Nat : USet := trunctype.mk (Σ α : preNat, (nNat α)) !is_trunc_sigma
 
 -- constructors
 definition Z : Nat := ⟨λ X f x, x, λ X Y x y h k f u v, u⟩
@@ -326,7 +331,37 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 
 /- unit circle -/
 
+definition ap_id (X : Type) (x y : X) (p : x =  y) : p = ap id p := 
+begin
+induction p, reflexivity,
+end
+
+definition ap_comp {X Y Z: Type} (f : X → Y) (g : Y → Z) (x y : X) (p : x =  y)
+ : ap g (ap f p)  = ap (g ∘ f) p := 
+begin
+induction p, reflexivity,
+end
+
 definition preS1 : UGpd := π (X : UGpd) (x : X), x = x ⇒ X
 
+example {α : preS1} (X : UGpd) (x : X) (l : x = x) 
+  : α X x l == α X x (ap id l)
+  := begin apply ap _ (ap_id X x x l) end
+
+
+-- naturality
 definition nS1 (α : preS1) : USet 
-  := π (X Y : UGpd) (f:X→Y) (x:X) (p:x=x), f (α X x p) == α Y (f x) (ap f p)
+  := π (X Y : UGpd) (f:X→Y) (x:X) (l:x=x), f (α X x l) == α Y (f x) (ap f l)
+
+-- coherence
+definition cS1id {α : preS1} (θ : nS1 α) : UPrp
+  := (π (X : UGpd) (x : X) (l : x = x), 
+    θ X X id x l == ap _ (ap_id X x x l))
+definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
+  := π (X Y Z: UGpd) (f : X→Y) (g:Y→Z) (x : X) (l : x = x), 
+     θ X Z (g ∘ f) x l == (ap g (θ X Y f x l)) ⬝ (θ Y Z g (f x) (ap f l)) 
+       ⬝ ap (α Z (g(f x))) (ap_comp f g x x l)
+
+definition S1 : UGpd
+  := trunctype.mk (Σ (α : preS1) (θ : nS1 α), (and (cS1id θ) (cS1comp θ))) 
+    !is_trunc_sigma
