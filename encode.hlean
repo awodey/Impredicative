@@ -39,7 +39,7 @@ infix ` == ` := teq
 
 /- Conjunction of propositions -/
 
-definition and (A B : UPrp) : UPrp := π X:UPrp, (A ⇒ B ⇒ X) ⇒ X
+definition and (A B : UPrp) : UPrp := π X : UPrp, (A ⇒ B ⇒ X) ⇒ X
 
 -- constructor
 definition con {A B : UPrp} (p : A) (q : B) : and A B := λ X f, f p q
@@ -103,7 +103,7 @@ definition prop_trunc (A : Type) : UPrp := π X : UPrp, (A ⇒ X) ⇒ X
 -- constructors
 definition prop_trunc_in {A : U} (a : A) : prop_trunc A := λ X f, f a
 
-definition prop_trunc_eq {A : U} (x y : prop_trunc A) : x=y := is_prop.elim x y
+definition prop_trunc_eq {A : U} (x y : prop_trunc A) : x = y := is_prop.elim x y
 
 -- recursor
 definition prop_trunc_rec {A : U} {P : UPrp} (f : A → P) (a : prop_trunc A) : P
@@ -134,11 +134,11 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 
 -- System F style encoding
 definition preSetEncode (A : USet) : USet := 
-  π(X : USet),  (A ⇒ X) ⇒ X
+  π (X : USet),  (A ⇒ X) ⇒ X
 
 -- naturality condition
 definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
-  := π (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
+  :=  π (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
 
 --refined encoding
 definition  SetEncode (A : USet) : USet 
