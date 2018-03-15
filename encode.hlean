@@ -329,7 +329,7 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 
 /- 1-types -/
 
-/- unit circle -/
+/- 1 Sphere -/
 
 definition ap_id (X : Type) (x y : X) (p : x =  y) : p = ap id p := 
 begin
