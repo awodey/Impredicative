@@ -1,5 +1,5 @@
--- Impredicate encodings of (higher) inductive types
--- Formalization by Steve Awodey and Jonas Frey
+-- Impredicative encodings of (higher) inductive types
+-- formalization by Steve Awodey and Jonas Frey
 
 import imp_prop_trunc 
 
