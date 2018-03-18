@@ -1,5 +1,5 @@
---- Impredicate encodings of (higher) inductive types
--- Formalization by Steve Awodey and Jonas Frey
+-- Impredicative encodings of (higher) inductive types
+-- formalization by Steve Awodey and Jonas Frey
 
 import imp_prop_trunc .helpers
 
@@ -328,7 +328,7 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 
 /- 1-types -/
 
-/- unit circle -/
+/- 1 Sphere -/
 
 definition preS1 : UGpd := tΠ ⦃X : UGpd⦄ ⦃x : X⦄, x = x ⇒ X
 
