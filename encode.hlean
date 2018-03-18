@@ -1,26 +1,26 @@
--- Impredicate encodings of (higher) inductive types
+--- Impredicate encodings of (higher) inductive types
 -- Formalization by Steve Awodey and Jonas Frey
 
-import imp_prop_trunc 
+import imp_prop_trunc .helpers
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
 
 definition n_to_sn {n : ℕ₋₂} (A : trunctype.{0} n) : trunctype.{0} (n+1)
   := trunctype.mk A !is_trunc_succ
 
--- what is that good for?
-attribute trunc.rec [recursor] 
-
 abbreviation U     := Type.{0} 
 abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
 abbreviation UGpd  := trunctype.{0} 1 
 notation `↑`       := n_to_sn   -- type \u-
+notation `t` x   := trunctype.mk x !is_trunc_pi -- shorthand to truncate Pi's
+notation x `=⟨` n `⟩` y := @trunctype.mk n (x = y) !is_trunc_eq
+
 
 -- truncated products
 definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
   :  trunctype.{0} n
-  := trunctype.mk (∀ x, B x) (is_trunc_pi B n)
+  := trunctype.mk (∀ x, B x) !is_trunc_pi
 notation `π` binders `,` r:(scoped P, tprod P) := r
 
 -- trucated arrows
@@ -36,18 +36,20 @@ reserve infix ` == `:50
 infix ` == ` := teq
 
 -- truncated sigma
--- definition tsig {n : ℕ₋₂} {A : trunctype.{0} n} (B : A → trunctype.{0} n)  
---   : trunctype.{0} n := trunctype.mk (sigma B) !is_trunc_sigma
--- notation `σ` binders `,` r:(scoped P, tsig P) := r
+notation `σ` binders `,` r:(scoped P, sigma P) := trunctype.mk r !is_trunc_sigma
 
 /- Encoding of Propostions -/
 
 /- Conjunction of propositions -/
 
-definition and (A B : UPrp) : UPrp := π X : UPrp, (A ⇒ B ⇒ X) ⇒ X
+definition and (A B : UPrp) : UPrp := tΠ X : UPrp, (A ⇒ B ⇒ X) ⇒ X
 
 -- constructor
-definition con {A B : UPrp} (p : A) (q : B) : and A B := λ X f, f p q
+definition con  {A B : UPrp} (p : A) (q : B) : and A B := λ X f, f p q
+
+-- projections
+definition proj1 {A B : UPrp} (p : and A B) : A := p A (λ x y, x)
+definition proj2 {A B : UPrp} (p : and A B) : B := p B (λ x y, y)
 
 -- recursor
 definition and_rec {A B C : UPrp} (f : A ⇒ B ⇒ C)  (p : and A B) : C := p C f
@@ -72,7 +74,7 @@ definition and_univ_prop {A B C : UPrp} : (and A B ⇒ C) ≃ (A ⇒ B ⇒ C)
 
 /- Disjunction of propositions -/
 
-definition or (A B : UPrp) : UPrp := π X : UPrp, (A ⇒ X) ⇒ (B ⇒ X) ⇒ X
+definition or (A B : UPrp) : UPrp := tΠ X : UPrp, (A ⇒ X) ⇒ (B ⇒ X) ⇒ X
 
 -- constructors
 definition or_inl {A B : UPrp} (a : A) : or A B := λX f g, f a
@@ -103,7 +105,7 @@ definition or_univ_prop {A B C : UPrp}
 
 /- Propositional truncation -/
 
-definition prop_trunc (A : Type) : UPrp := π X : UPrp, (A ⇒ X) ⇒ X
+definition prop_trunc (A : Type) : UPrp := tΠ X : UPrp, (A ⇒ X) ⇒ X
 
 -- constructors
 definition prop_trunc_in {A : U} (a : A) : prop_trunc A := λ X f, f a
@@ -139,15 +141,14 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 
 -- System F style encoding
 definition preSetEncode (A : USet) : USet := 
-  π (X : USet),  (A ⇒ X) ⇒ X
+  tΠ (X : USet),  (A ⇒ X) ⇒ X
 
 -- naturality condition
 definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
-  :=  π (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
+  :=  tΠ (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
 
 --refined encoding
-definition  SetEncode (A : USet) : USet 
-  := trunctype.mk (Σ α : preSetEncode A, (nSetEncode α)) !is_trunc_sigma
+definition  SetEncode (A : USet) : USet := σ(α : preSetEncode A), nSetEncode α
 
 -- constructor
 definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
@@ -170,15 +171,14 @@ definition eta_is_equiv (A : USet) : is_equiv (@eta A)
 
 -- System F encoding
 definition  preProduct (A B : USet) : USet :=
-  π (X : USet), (A ⇒ B ⇒ X) ⇒ X
+  tΠ (X : USet), (A ⇒ B ⇒ X) ⇒ X
 
 -- naturality condition
 definition nProduct {A B : USet} (α : preProduct A B) : UPrp 
-  := π(X Y : USet) (f : X → Y) (h : A ⇒ B ⇒ X), f (α X h) == α Y (λ a, f ∘ h a)
+  := tΠ(X Y : USet) (f : X → Y) (h : A ⇒ B ⇒ X), f (α X h) == α Y (λ a, f ∘ h a)
 
 -- refined encoding
-definition  Product (A B : USet) : USet 
-  := trunctype.mk (Σ(α : preProduct A B), nProduct α) !is_trunc_sigma
+definition  Product (A B : USet) : USet := σ(α : preProduct A B), nProduct α
      
 -- constructor
 definition Pair {A B : USet} (a : A) (b : B) : Product A B 
@@ -231,15 +231,14 @@ definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
 
 -- System F encoding
 definition  preSum (A B : USet) : USet :=
-  π(X : USet), (A ⇒ X) ⇒ (B ⇒ X) ⇒ X
+  tΠ(X : USet), (A ⇒ X) ⇒ (B ⇒ X) ⇒ X
 
 -- naturality condition
 definition nSum {A B : USet} (a : preSum A B) : UPrp 
-  := π(X Y : USet) (f : X→Y) (h : A→X) (k : B→X), f(a X h k) == a Y (f∘h) (f∘k)
+  := tΠ(X Y : USet) (f : X→Y) (h : A→X) (k : B→X), f(a X h k) == a Y (f∘h) (f∘k)
 
 -- refined encoding
-definition Sum (A B : USet) : USet 
-  := trunctype.mk (Σ α : preSum A B, nSum α) !is_trunc_sigma
+definition Sum (A B : USet) : USet := σ(α : preSum A B), nSum α
 
 -- constructors
 definition Sum_inl {A B : USet} (a : A) : Sum A B 
@@ -287,15 +286,15 @@ definition Sum_univ_prop {A B X : USet}
 /- Natural numbers -/
 
 -- System F encoding
-definition preNat : USet := π X : USet, (X ⇒ X) ⇒ X ⇒ X
+definition preNat : USet := tΠ X : USet, (X ⇒ X) ⇒ X ⇒ X
 
 -- naturality condition
 definition nNat (α : preNat) : UPrp 
-  := π (X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
+  := tΠ (X Y : USet) (x : X) (y : Y) (h : X → X) (k : Y → Y) (f : X → Y),
          f x = y ⇒ f ∘ h = k ∘ f ⇒ f (α X h x) == α Y k y
 
 -- refined encoding
-definition Nat : USet := trunctype.mk (Σ α : preNat, (nNat α)) !is_trunc_sigma
+definition Nat : USet := σ(α : preNat), nNat α
 
 -- constructors
 definition Z : Nat := ⟨λ X f x, x, λ X Y x y h k f u v, u⟩
@@ -313,55 +312,133 @@ definition Nat_beta {X : USet} (h : X → X) (x : X) : Nat_rec h x Z = x := rfl
 definition Nat_beta' {X : USet} (h : X → X) (x : X) (n : Nat) 
   :  Nat_rec h x (S n) = h (Nat_rec h x n) := rfl 
 
+-- eta rules
 definition Nat_weak_eta (n : Nat) : Nat_rec S Z n = n
   := begin 
      induction n with n p, 
      fapply sigma_eq, apply eq_of_homotopy3, intro X h x, 
      apply p Nat X Z x S h (Nat_rec h x), reflexivity, apply eq_of_homotopy,
-     intro, reflexivity, apply is_prop.elimo,
-     end
+     intro, reflexivity, apply is_prop.elimo end
 
 definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h∘f)
   :  f = Nat_rec h x
-  := begin fapply eq_of_homotopy, intro n, refine (ap f (Nat_weak_eta n))⁻¹ ⬝ _, 
-     unfold Nat_rec, induction n with m k, apply k, assumption, assumption, end
+  := begin fapply eq_of_homotopy, intro n, refine (ap f (Nat_weak_eta n))⁻¹ ⬝ _,
+     unfold Nat_rec, induction n with m k, apply k, assumption, assumption end
 
 
 /- 1-types -/
 
 /- unit circle -/
 
-definition ap_id (X : Type) (x y : X) (p : x =  y) : p = ap id p := 
-begin
-induction p, reflexivity,
-end
-
-definition ap_comp {X Y Z: Type} (f : X → Y) (g : Y → Z) (x y : X) (p : x =  y)
- : ap g (ap f p)  = ap (g ∘ f) p := 
-begin
-induction p, reflexivity,
-end
-
-definition preS1 : UGpd := π (X : UGpd) (x : X), x = x ⇒ X
-
-example {α : preS1} (X : UGpd) (x : X) (l : x = x) 
-  : α X x l == α X x (ap id l)
-  := begin apply ap _ (ap_id X x x l) end
-
+definition preS1 : UGpd := tΠ ⦃X : UGpd⦄ ⦃x : X⦄, x = x ⇒ X
 
 -- naturality
 definition nS1 (α : preS1) : USet 
-  := π (X Y : UGpd) (f:X→Y) (x:X) (l:x=x), f (α X x l) == α Y (f x) (ap f l)
+  := tΠ ⦃X Y : UGpd⦄ (f:X→Y) {x:X} (l:x=x), f (α l) == α (f◅l)
 
 -- coherence
 definition cS1id {α : preS1} (θ : nS1 α) : UPrp
-  := (π (X : UGpd) (x : X) (l : x = x), 
-    θ X X id x l == ap _ (ap_id X x x l))
-definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
-  := π (X Y Z: UGpd) (f : X→Y) (g:Y→Z) (x : X) (l : x = x), 
-     θ X Z (g ∘ f) x l == (ap g (θ X Y f x l)) ⬝ (θ Y Z g (f x) (ap f l)) 
-       ⬝ ap (α Z (g(f x))) (ap_comp f g x x l)
+  := tΠ ⦃X : UGpd⦄ ⦃x : X⦄ (l : x = x), θ id l =⟨-1⟩  @α X x ◅ ap_id l
 
-definition S1 : UGpd
-  := trunctype.mk (Σ (α : preS1) (θ : nS1 α), (and (cS1id θ) (cS1comp θ))) 
-    !is_trunc_sigma
+definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
+  := tΠ ⦃X Y Z: UGpd⦄ (f : X→Y) (g:Y→Z) {x : X} (l : x = x), 
+       θ (g ∘ f) l =⟨-1⟩ g◅(θ f l) ⬝ θ g (f◅l) ⬝ @α Z (g (f x)) ◅ ap_comp l f g
+
+-- refined encoding
+definition S1 : UGpd := σ(α : preS1) (θ : nS1 α), and (cS1id θ) (cS1comp θ)
+
+-- constructors
+definition prebase : preS1 := λ X x l, x
+
+definition nbase : nS1 prebase := λ X Y f x l, refl (f x)
+
+definition cidbase : cS1id nbase := λ X x l, ap_const (eq.rec rfl l) x
+
+definition ccompbase : cS1comp nbase 
+  := begin intros X Y Z f g x l, unfold teq, symmetry, refine idp_con _ ⬝ _, 
+     exact eq.rec rfl (ap_comp l f g) end
+
+definition base : S1
+ := begin fconstructor, exact prebase, fconstructor, apply nbase, apply con, 
+    apply cidbase, apply ccompbase end
+
+definition preloop : prebase = prebase 
+  := begin apply eq_of_homotopy, intro X, 
+           apply eq_of_homotopy, intro x, 
+           apply eq_of_homotopy, intro l, exact l end
+
+definition aux1 (α β : preS1) (p : α = β) (θ : nS1 α) (ζ : nS1 β)
+  (H : Π {X Y : UGpd} (f:X→Y) {x:X} (l:x=x), 
+            θ f l ⬝ p ▻ Y ▻ f x ▻ (f ◅ l) =  f ◅ (p ▻ X ▻ x ▻ l) ⬝ ζ f l) 
+  :  θ =[p] ζ
+  := begin induction p, apply po_of_eq, repeat (apply eq_of_homotopy; intro),
+     refine !H ⬝ _, apply idp_con end
+
+definition aux2 {A : Type} {B : A → Type} {f g : Π a, B a} (H : f ~ g) (a : A) 
+  : eq_of_homotopy H ▻ a = H a := right_inv apd10 H ▻ a
+
+definition nloop : nbase =[preloop] nbase 
+  := begin fapply aux1, intros X Y f x l, 
+     krewrite idp_con, repeat krewrite aux2 end
+
+definition loop : base = base 
+  := begin fapply sigma_eq, exact preloop, fapply sigma_pathover',
+     exact nloop, apply is_prop.elimo end
+
+-- recursor 
+definition S1_rec {X : UGpd} {x : X} (l : x = x) (a : S1) : X := @a.1 X x l
+
+-- beta rules
+definition S1_beta_base {X : UGpd} {x : X} (l : x = x) : S1_rec l base = x := rfl
+
+definition aux {X : UGpd} {x : X} (l : x = x) {a b : S1} (p : a = b) 
+  : S1_rec l ◅ p = p..1 ▻ X ▻ x ▻ l :=
+begin
+induction p, unfold pa,
+end
+
+definition S1_beta_loop {X : UGpd} {x : X} (l : x = x) : S1_rec l ◅ loop = l 
+  := begin krewrite [aux, sigma_eq_pr1], repeat krewrite aux2 end
+
+-- set_option unifier.max_steps 50000
+-- definition aux1 (a : trunctype.carrier preS1)
+-- (n : trunctype.carrier (nS1 a))
+-- (c : trunctype.carrier (and (cS1id n) (cS1comp n)))
+-- (X Y : UGpd)
+-- (f : trunctype.carrier X → trunctype.carrier Y)
+-- (x y : trunctype.carrier X)
+-- (l : x = x) : 
+-- (@a S1 base loop).2.1 X Y f x l 
+-- ⬝ @n S1 Y (S1_rec (f ◅ l)) base loop 
+-- ⬝ @a Y (f x) ◅ @S1_beta_loop Y (f x) (f ◅ l) 
+-- = f ◅ @n S1 X (S1_rec l) base loop 
+-- ⬝ f ◅ (@a X x ◅ @S1_beta_loop X x l) 
+-- ⬝ @n X Y f x l:=
+-- begin
+-- --note z0 := (@a S1 base loop).2.1 X Y f x l,
+-- note z1 := @n S1 Y (S1_rec (f ◅ l)) base loop,
+-- note z2 := @a Y (f x) ◅ @S1_beta_loop Y (f x) (f ◅ l),
+-- note z3 := f ◅ @n S1 X (S1_rec l) base loop,
+-- note z4 := f ◅ (@a X x ◅ @S1_beta_loop X x l),
+-- note z5 := @n X Y f x l,
+-- unfold S1_rec at *,
+-- end
+
+definition S1_eta : S1_rec loop = id
+  := begin apply eq_of_homotopy, intro a, induction a with a n, induction n with n c,
+fapply sigma_eq, 
+apply eq_of_homotopy, intros X,  
+apply eq_of_homotopy, intros x,  
+apply eq_of_homotopy, intros l,  
+refine n (S1_rec l) loop⬝_,
+apply ap (@a X x), apply S1_beta_loop,
+ fapply sigma_pathover',
+apply aux1, intros X Y f x l, esimp, unfold S1_rec,
+repeat rewrite aux2,
+repeat rewrite ap_con, repeat rewrite con.assoc',
+assert d : cS1id n, exact proj1 c,
+assert e : cS1comp n, exact proj2 c,
+--note z := @d X x l,
+exact sorry,
+apply is_prop.elimo,
+end
