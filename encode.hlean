@@ -12,20 +12,20 @@ abbreviation U     := Type.{0}
 abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
 abbreviation UGpd  := trunctype.{0} 1 
-notation `↑`       := n_to_sn   -- type \u-
 notation `t` x   := trunctype.mk x !is_trunc_pi -- shorthand to truncate Pi's
 notation x `=⟨` n `⟩` y := @trunctype.mk n (x = y) !is_trunc_eq
+notation `σ` binders `,` r:(scoped P, sigma P) := trunctype.mk r !is_trunc_sigma
 
 
--- truncated products
-definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
-  :  trunctype.{0} n
-  := trunctype.mk (∀ x, B x) !is_trunc_pi
-notation `π` binders `,` r:(scoped P, tprod P) := r
+-- -- truncated products
+-- definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
+--   :  trunctype.{0} n
+--   := trunctype.mk (∀ x, B x) !is_trunc_pi
+-- notation `π` binders `,` r:(scoped P, tprod P) := r
 
 -- trucated arrows
 definition tto {n : ℕ₋₂} (A : Type) (B : trunctype.{0} n) : trunctype.{0} n
-  := π x : A, B
+  := tΠ x : A, B
 reserve infixr ` ⇒ `:21
 infixr ` ⇒ ` := tto
 
@@ -34,9 +34,6 @@ definition teq {n : ℕ₋₂} {A : trunctype.{0} (n.+1)} (x y : A) : trunctype.
   := trunctype.mk (x=y) !is_trunc_eq
 reserve infix ` == `:50
 infix ` == ` := teq
-
--- truncated sigma
-notation `σ` binders `,` r:(scoped P, sigma P) := trunctype.mk r !is_trunc_sigma
 
 /- Encoding of Propostions -/
 
@@ -105,16 +102,15 @@ definition or_univ_prop {A B C : UPrp}
 
 /- Propositional truncation -/
 
-definition prop_trunc (A : Type) : UPrp := tΠ X : UPrp, (A ⇒ X) ⇒ X
+definition prop_trunc (A : Type) : UPrp := tΠ ⦃X : UPrp⦄, (A ⇒ X) ⇒ X
 
 -- constructors
 definition prop_trunc_in {A : U} (a : A) : prop_trunc A := λ X f, f a
 
-definition prop_trunc_eq {A : U} (x y : prop_trunc A) : x = y := is_prop.elim x y
+definition prop_trunc_eq {A : U} (x y : prop_trunc A) : x = y := !is_prop.elim
 
 -- recursor
-definition prop_trunc_rec {A : U} {P : UPrp} (f : A → P) (a : prop_trunc A) : P
-  := a _ f
+definition prop_trunc_rec {A:U} {P:UPrp} (f:A→P) (a : prop_trunc A) : P := a f
 
 -- beta rules (as in HoTT book, 199)
 definition prop_trunc_beta {A : U} {P : UPrp} (f : A → P) (a : A) 
@@ -141,11 +137,11 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 
 -- System F style encoding
 definition preSetEncode (A : USet) : USet := 
-  tΠ (X : USet),  (A ⇒ X) ⇒ X
+  tΠ ⦃X : USet⦄,  (A ⇒ X) ⇒ X
 
 -- naturality condition
 definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
-  :=  tΠ (X Y : USet) (f : X → Y) (h : A → X), α Y (f ∘ h) == f (α X h)
+  :=  tΠ (X Y : USet) (f : X → Y) (h : A → X), α (f ∘ h) == f (α h)
 
 --refined encoding
 definition  SetEncode (A : USet) : USet := σ(α : preSetEncode A), nSetEncode α
@@ -330,75 +326,128 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 
 /- 1 Sphere -/
 
-definition preS1 : UGpd := tΠ ⦃X : UGpd⦄ ⦃x : X⦄, x = x ⇒ X
+definition preS1 : UGpd := tΠ (X : UGpd) (x : X), x = x ⇒ X
 
--- naturality
 definition nS1 (α : preS1) : USet 
-  := tΠ ⦃X Y : UGpd⦄ (f:X→Y) {x:X} (l:x=x), f (α l) == α (f◅l)
+  := tΠ (X Y : UGpd) (f:X→Y) (x:X) (l:x=x), α Y (f x) (f ◅ l) == f (α X x l)
 
--- coherence
 definition cS1id {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ ⦃X : UGpd⦄ ⦃x : X⦄ (l : x = x), θ id l =⟨-1⟩  @α X x ◅ ap_id l
+  := tΠ (X : UGpd) (x : X) (l : x = x), θ X X id x l =⟨-1⟩ α X x ◅ ap_id l
 
 definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ ⦃X Y Z: UGpd⦄ (f : X→Y) (g:Y→Z) {x : X} (l : x = x), 
-       θ (g ∘ f) l =⟨-1⟩ g◅(θ f l) ⬝ θ g (f◅l) ⬝ @α Z (g (f x)) ◅ ap_comp l f g
+  := tΠ (X Y Z : UGpd) (f : X → Y) (g : Y → Z) (x : X) (l : x = x), 
+             θ X Z (g ∘ f) x l 
+       =⟨-1⟩ (α Z (g (f x)) ◅ ap_compose g f l) 
+            ⬝ θ Y Z g (f x) (f ◅ l)              
+            ⬝ g ◅ (θ X Y f x l)
 
--- refined encoding
-definition S1 : UGpd := σ(α : preS1) (θ : nS1 α), and (cS1id θ) (cS1comp θ)
+definition S1 : UGpd := σ(α : preS1)(θ : nS1 α)(ι : cS1id θ), (cS1comp θ)
 
--- constructors
-definition prebase : preS1 := λ X x l, x
-
-definition nbase : nS1 prebase := λ X Y f x l, refl (f x)
-
-definition cidbase : cS1id nbase := λ X x l, ap_const (eq.rec rfl l) x
-
-definition ccompbase : cS1comp nbase 
-  := begin intros X Y Z f g x l, unfold teq, symmetry, refine idp_con _ ⬝ _, 
-     exact eq.rec rfl (ap_comp l f g) end
-
-definition base : S1
- := begin fconstructor, exact prebase, fconstructor, apply nbase, apply con, 
-    apply cidbase, apply ccompbase end
-
-definition preloop : prebase = prebase 
-  := begin apply eq_of_homotopy, intro X, 
-           apply eq_of_homotopy, intro x, 
-           apply eq_of_homotopy, intro l, exact l end
+definition prebase   : preS1         := λ X x l, x
+definition nbase     : nS1 prebase   := λ X Y f x l, rfl
+definition cidbase   : cS1id nbase   := λ X x l, !ap_const
+definition ccompbase : cS1comp nbase := λ X Y Z f g x l, !ap_const
+definition base      : S1            := ⟨prebase, nbase, cidbase, ccompbase⟩
 
 definition aux1 (α β : preS1) (p : α = β) (θ : nS1 α) (ζ : nS1 β)
   (H : Π {X Y : UGpd} (f:X→Y) {x:X} (l:x=x), 
-            θ f l ⬝ p ▻ Y ▻ f x ▻ (f ◅ l) =  f ◅ (p ▻ X ▻ x ▻ l) ⬝ ζ f l) 
+            θ X Y f x l ⬝ f ◅ (p ▻ X ▻ x ▻ l) = p ▻ Y ▻ f x ▻ (f ◅ l) ⬝ ζ X Y f x l)
   :  θ =[p] ζ
-  := begin induction p, apply po_of_eq, repeat (apply eq_of_homotopy; intro),
-     refine !H ⬝ _, apply idp_con end
+  := begin induction p, apply po_of_eq, repeat (apply ↑; intro), refine !H⬝_, 
+     exact !idp_con end
 
-definition aux2 {A : Type} {B : A → Type} {f g : Π a, B a} (H : f ~ g) (a : A) 
-  : eq_of_homotopy H ▻ a = H a := right_inv apd10 H ▻ a
-
-definition nloop : nbase =[preloop] nbase 
-  := begin fapply aux1, intros X Y f x l, 
-     krewrite idp_con, repeat krewrite aux2 end
-
-definition loop : base = base 
-  := begin fapply sigma_eq, exact preloop, fapply sigma_pathover',
+definition preloop : prebase =          prebase := ↑(λX,↑(λx,↑id))
+definition nloop   : nbase   =[preloop] nbase 
+  := begin fapply aux1, intros, krewrite idp_con, repeat krewrite aux2 end
+definition loop    : base    =          base 
+  := begin fapply sigma_eq, exact preloop, fapply sigma_pathover', 
      exact nloop, apply is_prop.elimo end
 
--- recursor 
-definition S1_rec {X : UGpd} {x : X} (l : x = x) (a : S1) : X := @a.1 X x l
-
--- beta rules
-definition S1_beta_base {X : UGpd} {x : X} (l : x = x) : S1_rec l base = x := rfl
+definition S1_rec [unfold_full] (X:UGpd) (x:X) (l:x=x) (a:S1) : X := a.1 X x l
 
 definition aux {X : UGpd} {x : X} (l : x = x) {a b : S1} (p : a = b) 
-  : S1_rec l ◅ p = p..1 ▻ X ▻ x ▻ l :=
-begin
-induction p, unfold pa,
+  : S1_rec X x l ◅ p = p..1 ▻ X ▻ x ▻ l := eq.rec rfl p
+
+definition S1_beta_base (X : UGpd) (x : X) (l : x = x) : S1_rec X x l base = x := rfl
+lemma S1_beta_loop {X : UGpd} {x : X} (l : x = x) : S1_rec X x l ◅ loop =⟨-1⟩ l 
+  := begin krewrite [aux, sigma_eq_pr1], repeat krewrite aux2, fconstructor, end
+
+definition S1_com_con {X Y : UGpd} (f : X → Y) {x : X} (l : x = x) (a : S1) 
+  : S1_rec Y (f x) (f ◅ l) a = f (S1_rec X x l a) := a.2.1 X Y f x l
+
+reveal S1_beta_loop
+
+definition aux3 (α : preS1) (θ : nS1 α) {X Y : UGpd} (f : X → Y) (x : X) 
+(l m : x = x) (p : l = m) : 
+f ◅ (α X x ◅ p) ⬝ (θ X Y f x m)⁻¹ = (θ X Y f x l)⁻¹ ⬝ α Y (f x) ◅ (f ◅◅ p)
+:= begin induction p, refine _⬝ !idp_con, 
+reflexivity end
+
+definition S1_eta : S1_rec S1 base loop = id
+  := begin apply ↑, intro a, induction a with α n, induction n with θ ξ,
+induction ξ with ξ ρ,
+fapply sigma_eq, 
+{apply eq_of_homotopy, intros X,  
+apply eq_of_homotopy, intros x,  
+apply eq_of_homotopy, intros l, esimp,
+refine (θ S1 X (S1_rec X x l) base loop)⁻¹ ⬝ _,
+apply ap (@α X x), apply S1_beta_loop},
+fapply sigma_pathover',
+{apply aux1, intros X Y f x l, esimp,
+repeat rewrite aux2,
+repeat rewrite ap_con, repeat rewrite con.assoc',
+--unfold cS1comp at ρ,
+unfold preS1 at α,
+unfold nS1 at θ,
+unfold cS1id at ξ,
+note l1' := (α S1 base loop).2.1 X Y f x, --l,
+note l1  := l1' l,
+note l2  :=  f ◅ (θ S1 X (S1_rec X x l) base loop)⁻¹,
+note l3  := f ◅ (α X x ◅ S1_beta_loop l),
+note r1  := (θ S1 Y (S1_rec Y (f x) (f ◅ l)) base loop)⁻¹,
+note r2  := α Y (f x) ◅ S1_beta_loop (f ◅ l),
+note r3  := θ X Y f x l,
+unfold cS1comp at *,
+apply flri,
+refine !con.assoc⬝_, 
+refine (ap (λ x,_ ⬝x) !aux3)⬝_, 
+refine !con.assoc'⬝_, 
+apply frri, apply frr, 
+refine ((λx,_⬝x)◅!ap_inv)⬝_,
+apply frr, 
+refine _⬝!con.assoc',
+note z := frl (ρ _ _ _ (S1_rec X x l) f base loop ⬝ !con.assoc), 
+refine _⬝(ap (λx,_⬝x) z),
+--assert H : (f ◅ (θ S1 X (S1_rec X x l) base loop)⁻¹
+--⬝ (θ X Y f x (S1_rec X x l ◅ loop))⁻¹) = 
+-- next apply ρ
+assert H : α Y (f x) (S1_rec Y (f x) (f ◅ l) ◅ loop) = f (α X x (S1_rec X x l ◅ loop)),
+{assert K : α Y (f x) (S1_rec Y (f x) (f ◅ l) ◅ loop) = 
+            α Y (f x) (f ◅ (S1_rec X x l ◅ loop)),
+{apply ap (α _ _),},
+--repeat rewrite aux,
+--refine _◅!S1_com_con⬝_,
+},
+esimp at *,
+-- assert H : S1_rec Y (f x) (f ◅ l) (α S1 base loop) = f (α X x l),
+-- refine !S1_com_con⬝_, apply ap f, esimp,
+-- note y := μ l, 
+-- note y' := μ loop,
+-- esimp, 
+-- note z := ν (S1_rec l) f loop, clear ξ,
+-- unfold ap_id at y, 
+-- unfold ap_id at y',
+-- note bro := f ◅ θ (S1_rec l) loop, esimp at bro,
+-- note tro := θ f l, 
+-- assert H : S1_rec l ◅ loop = l, 
+-- note w := @θ _ _ f _ ◅ (aux l loop),
+-- rewrite w at z, 
+-- exact sorry
+},
+apply is_prop.elimo,
 end
 
-definition S1_beta_loop {X : UGpd} {x : X} (l : x = x) : S1_rec l ◅ loop = l 
-  := begin krewrite [aux, sigma_eq_pr1], repeat krewrite aux2 end
+
 
 -- set_option unifier.max_steps 50000
 -- definition aux1 (a : trunctype.carrier preS1)
@@ -423,22 +472,3 @@ definition S1_beta_loop {X : UGpd} {x : X} (l : x = x) : S1_rec l ◅ loop = l
 -- note z5 := @n X Y f x l,
 -- unfold S1_rec at *,
 -- end
-
-definition S1_eta : S1_rec loop = id
-  := begin apply eq_of_homotopy, intro a, induction a with a n, induction n with n c,
-fapply sigma_eq, 
-apply eq_of_homotopy, intros X,  
-apply eq_of_homotopy, intros x,  
-apply eq_of_homotopy, intros l,  
-refine n (S1_rec l) loop⬝_,
-apply ap (@a X x), apply S1_beta_loop,
- fapply sigma_pathover',
-apply aux1, intros X Y f x l, esimp, unfold S1_rec,
-repeat rewrite aux2,
-repeat rewrite ap_con, repeat rewrite con.assoc',
-assert d : cS1id n, exact proj1 c,
-assert e : cS1comp n, exact proj2 c,
---note z := @d X x l,
-exact sorry,
-apply is_prop.elimo,
-end
