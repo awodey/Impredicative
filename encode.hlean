@@ -5,9 +5,6 @@ import imp_prop_trunc .helpers
 
 open funext eq trunc is_trunc prod sum pi function is_equiv sigma sigma.ops
 
-definition n_to_sn {n : ℕ₋₂} (A : trunctype.{0} n) : trunctype.{0} (n+1)
-  := trunctype.mk A !is_trunc_succ
-
 abbreviation U     := Type.{0} 
 abbreviation UPrp  := trunctype.{0} -1
 abbreviation USet  := trunctype.{0} 0
@@ -15,13 +12,6 @@ abbreviation UGpd  := trunctype.{0} 1
 notation `t` x   := trunctype.mk x !is_trunc_pi -- shorthand to truncate Pi's
 notation x `=⟨` n `⟩` y := @trunctype.mk n (x = y) !is_trunc_eq
 notation `σ` binders `,` r:(scoped P, sigma P) := trunctype.mk r !is_trunc_sigma
-
-
--- -- truncated products
--- definition tprod {n : ℕ₋₂} {A : Type} (B : A → trunctype.{0} n) 
---   :  trunctype.{0} n
---   := trunctype.mk (∀ x, B x) !is_trunc_pi
--- notation `π` binders `,` r:(scoped P, tprod P) := r
 
 -- trucated arrows
 definition tto {n : ℕ₋₂} (A : Type) (B : trunctype.{0} n) : trunctype.{0} n
@@ -51,12 +41,12 @@ definition proj2 {A B : UPrp} (p : and A B) : B := p B (λ x y, y)
 -- recursor
 definition and_rec {A B C : UPrp} (f : A ⇒ B ⇒ C)  (p : and A B) : C := p C f
 
--- beta rule
-definition and_beta {A B C : UPrp} (f : A ⇒ B ⇒ C) (a : A) (b : B) 
+-- β rule
+definition and_β {A B C : UPrp} (f : A ⇒ B ⇒ C) (a : A) (b : B) 
   : and_rec f (con a b) = f a b := rfl
 
--- eta rule
-definition and_eta {A B C : UPrp} (f : and A B ⇒ C)
+-- η rule
+definition and_η {A B C : UPrp} (f : and A B ⇒ C)
   :  f = and_rec (λ a b, f (con a b)) 
   := eq_of_homotopy (λ x, !is_prop.elim)
 
@@ -82,15 +72,15 @@ definition or_inr {A B : UPrp} (b : B) : or A B := λX f g, g b
 definition or_rec {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (v : or A B) : C
   := v C f g
 
--- beta rules
-definition or_beta_l {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (a : A)
+-- β rules
+definition or_β_l {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (a : A)
   : or_rec f g (@or_inl A B a) = f a := rfl
 
-definition or_beta_r {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (b : B)
+definition or_β_r {A B C : UPrp} (f : A ⇒ C) (g : B ⇒ C) (b : B)
   : or_rec f g (@or_inr A B b) = g b := rfl
 
--- eta rule
-definition or_eta {A B C : UPrp} (h : or A B ⇒ C)
+-- η rule
+definition or_η {A B C : UPrp} (h : or A B ⇒ C)
   : h = or_rec (λ a, h (@or_inl A B a)) (λ b, h (@or_inr A B b)) 
   := eq_of_homotopy (λ v, !is_prop.elim)
 
@@ -112,16 +102,16 @@ definition prop_trunc_eq {A : U} (x y : prop_trunc A) : x = y := !is_prop.elim
 -- recursor
 definition prop_trunc_rec {A:U} {P:UPrp} (f:A→P) (a : prop_trunc A) : P := a f
 
--- beta rules (as in HoTT book, 199)
-definition prop_trunc_beta {A : U} {P : UPrp} (f : A → P) (a : A) 
+-- β rules (as in HoTT book, 199)
+definition prop_trunc_β {A : U} {P : UPrp} (f : A → P) (a : A) 
   :  prop_trunc_rec f (prop_trunc_in a) = f a := rfl
 
-definition prop_trunc_beta' {A : U} {P : UPrp} (f : A → P) (a b : prop_trunc A)
+definition prop_trunc_β' {A : U} {P : UPrp} (f : A → P) (a b : prop_trunc A)
   :  ap (prop_trunc_rec f) (prop_trunc_eq a b) 
      = is_prop.elim (prop_trunc_rec f a) (prop_trunc_rec f b) := !is_prop.elim
 
--- eta rule
-definition prop_trunc_eta {A : U} {P : UPrp} (f : prop_trunc A → P)
+-- η rule
+definition prop_trunc_η {A : U} {P : UPrp} (f : prop_trunc A → P)
   :  f = prop_trunc_rec (f ∘ prop_trunc_in) 
   := eq_of_homotopy (λ x, !is_prop.elim)
 
@@ -147,14 +137,14 @@ definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp
 definition  SetEncode (A : USet) : USet := σ(α : preSetEncode A), nSetEncode α
 
 -- constructor
-definition eta {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
+definition η {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
 
 /- The "Basic Lemma" -/
 
 definition helper {A : USet} (x : SetEncode A) : is_prop (nSetEncode x.1)
   := begin exact _, end
 
-definition eta_is_equiv (A : USet) : is_equiv (@eta A) 
+definition η_is_equiv (A : USet) : is_equiv (@η A) 
   := begin fapply adjointify,
            {λ e, e.1 A id},
            {intro, induction b with b n, fapply sigma_eq, 
@@ -191,12 +181,12 @@ definition Proj2 {A B : USet} : Product A B → B
 definition Product_rec {A B C : Set} (f : A ⇒ B ⇒ C) (p : Product A B) : C 
   := p.1 C f
 
--- beta rule
-definition Product_beta {A B C : USet} (f : A → B → C) (a : A) (b : B) 
+-- β rule
+definition Product_β {A B C : USet} (f : A → B → C) (a : A) (b : B) 
   :  Product_rec f (Pair a b) = f a b := rfl
 
--- weak eta rule
-definition Product_weak_eta {A B : USet} (x : Product A B)
+-- weak η rule
+definition Product_weak_η {A B : USet} (x : Product A B)
   :  Product_rec Pair x = x
   := begin induction x with p n, fapply sigma_eq, apply eq_of_homotopy2, 
      intros X f, exact (n _ _ (Product_rec f) Pair), apply is_prop.elimo end
@@ -206,22 +196,22 @@ definition Product_com_con {A B C D : USet} (f : A → B → C) (g : C → D)
   :  Product_rec (λ a b, g (f a b)) = g ∘ Product_rec f
   := (eq_of_homotopy (λ x, x.2 C D g f))⁻¹
 
--- strong eta rule
-definition Product_eta {A B C : USet} (g : Product A B → C) 
+-- strong η rule
+definition Product_η {A B C : USet} (g : Product A B → C) 
   :  Product_rec (λ a b, g (Pair a b)) = g
-  := (Product_com_con Pair g) ⬝ eq_of_homotopy (λ x, ap g (Product_weak_eta x))
+  := (Product_com_con Pair g) ⬝ eq_of_homotopy (λ x, ap g (Product_weak_η x))
 
--- classical eta rule
-definition Product_classical_eta {A B : USet} (p : Product A B) 
+-- classical η rule
+definition Product_classical_η {A B : USet} (p : Product A B) 
   :   Pair (Proj1 p) (Proj2 p) = p
-  :=  ap (λ f, f p) (Product_eta _)⁻¹ ⬝ (Product_weak_eta p)
+  :=  ap (λ f, f p) (Product_η _)⁻¹ ⬝ (Product_weak_η p)
         
 -- universal property
 definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
   := adjointify Product_rec 
                 (λ f a b, f (Pair a b))
-                Product_eta
-                (λ g, eq_of_homotopy2 (Product_beta g))
+                Product_η
+                (λ g, eq_of_homotopy2 (Product_β g))
 
 /- Sum A + B of sets -/
 
@@ -247,15 +237,15 @@ definition Sum_inr {A B : USet} (b : B) : Sum A B
 definition Sum_rec {A B X : USet} (f : A → X) (g : B → X) (c : Sum A B) : X 
   := c.1 X f g
 
--- beta rules
-definition Sum_beta_l {A B X : USet} (f : A → X) (g : B → X)
+-- β rules
+definition Sum_β_l {A B X : USet} (f : A → X) (g : B → X)
   : Sum_rec f g ∘ Sum_inl = f := rfl
 
-definition Sum_beta_r {A B X : USet} (f : A → X) (g : B → X)
+definition Sum_β_r {A B X : USet} (f : A → X) (g : B → X)
   : Sum_rec f g ∘ Sum_inr = g := rfl
 
--- weak eta
-definition Sum_weak_eta {A B : USet} (x : Sum A B) 
+-- weak η
+definition Sum_weak_η {A B : USet} (x : Sum A B) 
   : Sum_rec Sum_inl Sum_inr x = x
   := begin induction x with α p, fapply sigma_eq, 
      apply eq_of_homotopy3, intro X f g,  unfold Sum_rec, apply p, 
@@ -266,18 +256,18 @@ definition Sum_com_con {A B X Y : USet} (f : A → X) (g : B → X) (h : X → Y
   :  Sum_rec (h ∘ f) (h ∘ g) = h ∘ Sum_rec f g
   := begin apply eq_of_homotopy, intro α, induction α with α p, symmetry, apply p end
 
--- strong eta
-definition Sum_eta {A B X : USet} (h : Sum A B → X) 
+-- strong η
+definition Sum_η {A B X : USet} (h : Sum A B → X) 
   :  Sum_rec (h∘Sum_inl) (h∘Sum_inr) = h
-  := !Sum_com_con ⬝ eq_of_homotopy (λ x, ap h (Sum_weak_eta x))
+  := !Sum_com_con ⬝ eq_of_homotopy (λ x, ap h (Sum_weak_η x))
 
 --universal property
 definition Sum_univ_prop {A B X : USet} 
   :  (Sum A B ⇒ X) ≃ (Product (A ⇒ X) (B ⇒ X))
   := equiv.MK (λ h, Pair (h ∘ Sum_inl) (h ∘ Sum_inr))
               (λ a, Sum_rec (Proj1 a) (Proj2 a))
-              Product_classical_eta
-              Sum_eta
+              Product_classical_η
+              Sum_η
 
 /- Natural numbers -/
 
@@ -303,22 +293,22 @@ definition S (n : Nat) : Nat
 -- recursor
 definition Nat_rec {X : USet} (h : X → X) (x : X) (n : Nat) : X := n.1 X h x
 
--- beta rules
-definition Nat_beta {X : USet} (h : X → X) (x : X) : Nat_rec h x Z = x := rfl
-definition Nat_beta' {X : USet} (h : X → X) (x : X) (n : Nat) 
+-- β rules
+definition Nat_β {X : USet} (h : X → X) (x : X) : Nat_rec h x Z = x := rfl
+definition Nat_β' {X : USet} (h : X → X) (x : X) (n : Nat) 
   :  Nat_rec h x (S n) = h (Nat_rec h x n) := rfl 
 
--- eta rules
-definition Nat_weak_eta (n : Nat) : Nat_rec S Z n = n
+-- η rules
+definition Nat_weak_η (n : Nat) : Nat_rec S Z n = n
   := begin 
      induction n with n p, 
      fapply sigma_eq, apply eq_of_homotopy3, intro X h x, 
      apply p Nat X Z x S h (Nat_rec h x), reflexivity, apply eq_of_homotopy,
      intro, reflexivity, apply is_prop.elimo end
 
-definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h∘f)
+definition Nat_η {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h∘ f)
   :  f = Nat_rec h x
-  := begin fapply eq_of_homotopy, intro n, refine (ap f (Nat_weak_eta n))⁻¹ ⬝ _,
+  := begin fapply eq_of_homotopy, intro n, refine (ap f (Nat_weak_η n))⁻¹ ⬝ _,
      unfold Nat_rec, induction n with m k, apply k, assumption, assumption end
 
 
@@ -326,149 +316,141 @@ definition Nat_eta {X:USet} (h:X→X) (x:X) (f:Nat→X) (p : f Z = x) (q:f∘S=h
 
 /- 1 Sphere -/
 
-definition preS1 : UGpd := tΠ (X : UGpd) (x : X), x = x ⇒ X
+-- loop space functor
+definition Ω (A : Type)            : Type      := Σ a : A, a = a
+definition Ω' {A B : Type} (f:A→B) : Ω A → Ω B := sigma.rec (λ a l, ⟨f a, f ◅ l⟩)
+definition Ωi {A : Type} (l : Ω A) 
+  : Ω' id l = l
+  := begin induction l, fapply sigma_eq, reflexivity, apply po_of_eq, apply ap_id end
+definition Ωc {A B C : Type} {f : A → B} {g : B → C} (l : Ω A) 
+  : Ω'(g ∘ f) l = Ω' g (Ω' f l)
+  := begin induction l, fapply sigma_eq, reflexivity, apply po_of_eq, 
+     apply ap_compose end
+definition pi_nat {A B : Type} (f : A → B) (l : Ω A) 
+  : (Ω' f l).1 = f l.1
+  := begin induction l, reflexivity end
 
+definition preS1 : UGpd := tΠ ⦃X : UGpd⦄, Ω X → X
 definition nS1 (α : preS1) : USet 
-  := tΠ (X Y : UGpd) (f:X→Y) (x:X) (l:x=x), α Y (f x) (f ◅ l) == f (α X x l)
+  := tΠ ⦃X Y : UGpd⦄ (f:X→Y) (l:Ω X), α (Ω' f l) == f (α l)
 
 definition cS1id {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ (X : UGpd) (x : X) (l : x = x), θ X X id x l =⟨-1⟩ α X x ◅ ap_id l
+  := tΠ ⦃X : UGpd⦄ (l : Ω X), θ id l =⟨-1⟩ @α X ◅ Ωi l
 
 definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ (X Y Z : UGpd) (f : X → Y) (g : Y → Z) (x : X) (l : x = x), 
-             θ X Z (g ∘ f) x l 
-       =⟨-1⟩ (α Z (g (f x)) ◅ ap_compose g f l) 
-            ⬝ θ Y Z g (f x) (f ◅ l)              
-            ⬝ g ◅ (θ X Y f x l)
+  := tΠ ⦃X Y Z : UGpd⦄ (f : X → Y) (g : Y → Z) (l : Ω X), 
+             θ (g ∘ f) l =⟨-1⟩ (@α Z ◅ Ωc l) ⬝ θ g (Ω' f l) ⬝ g ◅ (θ f l)
 
 definition S1 : UGpd := σ(α : preS1)(θ : nS1 α)(ι : cS1id θ), (cS1comp θ)
 
-definition prebase   : preS1         := λ X x l, x
-definition nbase     : nS1 prebase   := λ X Y f x l, rfl
-definition cidbase   : cS1id nbase   := λ X x l, !ap_const
-definition ccompbase : cS1comp nbase := λ X Y Z f g x l, !ap_const
-definition base      : S1            := ⟨prebase, nbase, cidbase, ccompbase⟩
+definition preB   : preS1         := λ X l, l.1
+definition nB     : nS1 preB   := begin intros, induction l, constructor end
+definition cidB   : cS1id nB   
+  := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
+definition ccompB : cS1comp nB 
+  := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
+definition B      : S1            := ⟨preB, nB, cidB, ccompB⟩
 
 definition aux1 (α β : preS1) (p : α = β) (θ : nS1 α) (ζ : nS1 β)
-  (H : Π {X Y : UGpd} (f:X→Y) {x:X} (l:x=x), 
-            θ X Y f x l ⬝ f ◅ (p ▻ X ▻ x ▻ l) = p ▻ Y ▻ f x ▻ (f ◅ l) ⬝ ζ X Y f x l)
+  (H : Π {X Y : UGpd} (f:X→Y) (l:Ω X), 
+            θ f l ⬝ f ◅ (p ▻ X ▻ l) = p ▻ Y ▻ (Ω' f l) ⬝ ζ f l)
   :  θ =[p] ζ
   := begin induction p, apply po_of_eq, repeat (apply ↑; intro), refine !H⬝_, 
      exact !idp_con end
 
-definition preloop : prebase =          prebase := ↑(λX,↑(λx,↑id))
-definition nloop   : nbase   =[preloop] nbase 
-  := begin fapply aux1, intros, krewrite idp_con, repeat krewrite aux2 end
-definition loop    : base    =          base 
-  := begin fapply sigma_eq, exact preloop, fapply sigma_pathover', 
-     exact nloop, apply is_prop.elimo end
+definition preL : preB =          preB := ↑(λX,↑(λl,l.2))
+definition nL   : nB   =[preL] nB 
+  := begin fapply aux1, intros, induction l, krewrite idp_con, 
+     repeat krewrite aux2 end
+definition L    : Ω S1
+  := begin fconstructor, exact B, fapply sigma_eq, exact preL, 
+     fapply sigma_pathover', exact nL, apply is_prop.elimo end
 
-definition S1_rec [unfold_full] (X:UGpd) (x:X) (l:x=x) (a:S1) : X := a.1 X x l
+-- why do I have to put the X?
+definition S1_rec [unfold_full] ⦃X:UGpd⦄ (l:Ω X) (a:S1) : X := a.1 X l
+definition aux {X : UGpd} (l : Ω X) {a b : S1} (p : a = b) 
+  : S1_rec l ◅ p = p..1 ▻ X ▻ l := eq.rec rfl p
 
-definition aux {X : UGpd} {x : X} (l : x = x) {a b : S1} (p : a = b) 
-  : S1_rec X x l ◅ p = p..1 ▻ X ▻ x ▻ l := eq.rec rfl p
+definition S1_β_B (X : UGpd) (l : Ω X) : S1_rec l B = l.1 := rfl
 
-definition S1_beta_base (X : UGpd) (x : X) (l : x = x) : S1_rec X x l base = x := rfl
-lemma S1_beta_loop {X : UGpd} {x : X} (l : x = x) : S1_rec X x l ◅ loop =⟨-1⟩ l 
-  := begin krewrite [aux, sigma_eq_pr1], repeat krewrite aux2, fconstructor, end
+definition S1_β_L {X : UGpd} (l : Ω X) : Ω' (S1_rec l) L = l 
+  := begin fapply sigma_eq, reflexivity, apply po_of_eq, refine !aux⬝_,
+     refine ((λ x, x ▻ X ▻ l) ◅ !sigma_eq_pr1)⬝_,
+     refine ((λ x, x ▻ l) ◅ !aux2)⬝_, apply aux2
+     end
 
-definition S1_com_con {X Y : UGpd} (f : X → Y) {x : X} (l : x = x) (a : S1) 
-  : S1_rec Y (f x) (f ◅ l) a = f (S1_rec X x l a) := a.2.1 X Y f x l
+definition S1_com_con {X Y : UGpd} (f : X → Y) (l : Ω X)
+  : S1_rec (Ω' f l) ~ f ∘ S1_rec l  := λ a, a.2.1 X Y f l
 
-reveal S1_beta_loop
+definition aux3 (α : preS1) (θ : nS1 α) {X Y : UGpd} (f : X → Y)
+(l m : Ω X) (p : l = m) : 
+f ◅ (@α X ◅ p) ⬝ (θ f m)⁻¹ = (θ f l)⁻¹ ⬝ @α Y ◅ (Ω' f ◅ p)
+  := begin induction p, refine _⬝ !idp_con, reflexivity end
 
-definition aux3 (α : preS1) (θ : nS1 α) {X Y : UGpd} (f : X → Y) (x : X) 
-(l m : x = x) (p : l = m) : 
-f ◅ (α X x ◅ p) ⬝ (θ X Y f x m)⁻¹ = (θ X Y f x l)⁻¹ ⬝ α Y (f x) ◅ (f ◅◅ p)
-:= begin induction p, refine _⬝ !idp_con, 
-reflexivity end
+definition aux4 {X Y : UGpd} {h k : X → Y} (p : h = k) (l : Ω X) (α : preS1) (θ : nS1 α)
+  :  θ h l ⬝ p ▻ α l = @α Y ◅ (Ω' ◅ p ▻ l) ⬝ θ k l 
+  := begin induction p, refine _⬝!idp_con⁻¹, reflexivity end
 
-definition S1_eta : S1_rec S1 base loop = id
+set_option unifier.max_steps 30000
+
+definition aux5 {X Y : UGpd} {f g : X → Y} (p : f = g) (x : X) (l : x = x)
+  : pr₁ ◅ (Ω' ◅ p ▻ ⟨x,l⟩) = p ▻ x
+  := begin induction p, reflexivity end
+
+definition aux6 {X Y Z : UGpd} {f : X → Y} {g : Y → Z} (x : X) (l : x = x)
+ : pr₁ ◅ @Ωc X Y Z f g ⟨x,l⟩ = rfl :=
+begin
+refine !sigma_eq_pr1⬝_, reflexivity
+end
+
+definition aux7 {X Y : UGpd} {f : X → Y} {l m: Ω X} (p : l = m)
+  : pr₁ ◅ (Ω' f ◅ p)  = !pi_nat ⬝ f ◅ (pr1 ◅ p) ⬝ !pi_nat⁻¹
+  := begin induction p, exact !con.right_inv⁻¹ end
+
+definition S1_weak_η : S1_rec L = id
   := begin apply ↑, intro a, induction a with α n, induction n with θ ξ,
-induction ξ with ξ ρ,
-fapply sigma_eq, 
-{apply eq_of_homotopy, intros X,  
-apply eq_of_homotopy, intros x,  
-apply eq_of_homotopy, intros l, esimp,
-refine (θ S1 X (S1_rec X x l) base loop)⁻¹ ⬝ _,
-apply ap (@α X x), apply S1_beta_loop},
+induction ξ with ξ ρ, fapply sigma_eq, 
+{apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
+ apply ap (@α X), apply S1_β_L}, 
 fapply sigma_pathover',
-{apply aux1, intros X Y f x l, esimp,
-repeat rewrite aux2,
-repeat rewrite ap_con, repeat rewrite con.assoc',
---unfold cS1comp at ρ,
-unfold preS1 at α,
-unfold nS1 at θ,
-unfold cS1id at ξ,
-note l1' := (α S1 base loop).2.1 X Y f x, --l,
-note l1  := l1' l,
-note l2  :=  f ◅ (θ S1 X (S1_rec X x l) base loop)⁻¹,
-note l3  := f ◅ (α X x ◅ S1_beta_loop l),
-note r1  := (θ S1 Y (S1_rec Y (f x) (f ◅ l)) base loop)⁻¹,
-note r2  := α Y (f x) ◅ S1_beta_loop (f ◅ l),
-note r3  := θ X Y f x l,
-unfold cS1comp at *,
-apply flri,
-refine !con.assoc⬝_, 
+{apply aux1, 
+intros X Y f l, 
+repeat rewrite aux2, 
+repeat rewrite ap_con, 
+repeat rewrite con.assoc',
+apply flri,refine !con.assoc⬝_, 
 refine (ap (λ x,_ ⬝x) !aux3)⬝_, 
 refine !con.assoc'⬝_, 
 apply frri, apply frr, 
 refine ((λx,_⬝x)◅!ap_inv)⬝_,
 apply frr, 
-refine _⬝!con.assoc',
-note z := frl (ρ _ _ _ (S1_rec X x l) f base loop ⬝ !con.assoc), 
-refine _⬝(ap (λx,_⬝x) z),
---assert H : (f ◅ (θ S1 X (S1_rec X x l) base loop)⁻¹
---⬝ (θ X Y f x (S1_rec X x l ◅ loop))⁻¹) = 
--- next apply ρ
-assert H : α Y (f x) (S1_rec Y (f x) (f ◅ l) ◅ loop) = f (α X x (S1_rec X x l ◅ loop)),
-{assert K : α Y (f x) (S1_rec Y (f x) (f ◅ l) ◅ loop) = 
-            α Y (f x) (f ◅ (S1_rec X x l ◅ loop)),
-{apply ap (α _ _),},
---repeat rewrite aux,
---refine _◅!S1_com_con⬝_,
-},
-esimp at *,
--- assert H : S1_rec Y (f x) (f ◅ l) (α S1 base loop) = f (α X x l),
--- refine !S1_com_con⬝_, apply ap f, esimp,
--- note y := μ l, 
--- note y' := μ loop,
--- esimp, 
--- note z := ν (S1_rec l) f loop, clear ξ,
--- unfold ap_id at y, 
--- unfold ap_id at y',
--- note bro := f ◅ θ (S1_rec l) loop, esimp at bro,
--- note tro := θ f l, 
--- assert H : S1_rec l ◅ loop = l, 
--- note w := @θ _ _ f _ ◅ (aux l loop),
--- rewrite w at z, 
--- exact sorry
+refine _⬝!con.assoc', 
+refine _⬝(ap (λx,_⬝x) (frl (ρ (S1_rec l) f L ⬝ !con.assoc))),
+refine _⬝!con.assoc', refine _⬝!con.assoc',
+refine (aux2 (S1_com_con f l) (α L))⁻¹⬝_,
+apply fll, 
+refine aux4 (↑(S1_com_con f l)) L α θ ⬝ _,
+refine _⬝!con.assoc,
+refine _⬝!con.assoc,
+apply ap (λ x, x⬝  θ (f ∘ S1_rec l) L),
+apply flr, apply flr,
+repeat rewrite -ap_con,
+apply ap (λx, @α Y ◅ x),
+apply sigma_eq2, apply is_prop.elimo, induction l with x l,
+refine !ap_con⬝_, rewrite ap_con,
+krewrite aux5, rewrite aux2,
+rewrite con.assoc, refine !idp_con⬝_, 
+krewrite aux6, 
+refine !idp_con⬝_,
+krewrite aux7,
+unfold pi_nat, refine !idp_con⬝_,
+assert H : (pr₁ ◅ S1_β_L ⟨x, l⟩) = rfl, apply sigma_eq_pr1,
+assert K : f ◅ (pr₁ ◅ S1_β_L ⟨x, l⟩) = rfl, refine  f ◅◅ H ⬝ _, reflexivity,
+refine K⬝_, krewrite sigma_eq_pr1,
 },
 apply is_prop.elimo,
 end
 
-
-
--- set_option unifier.max_steps 50000
--- definition aux1 (a : trunctype.carrier preS1)
--- (n : trunctype.carrier (nS1 a))
--- (c : trunctype.carrier (and (cS1id n) (cS1comp n)))
--- (X Y : UGpd)
--- (f : trunctype.carrier X → trunctype.carrier Y)
--- (x y : trunctype.carrier X)
--- (l : x = x) : 
--- (@a S1 base loop).2.1 X Y f x l 
--- ⬝ @n S1 Y (S1_rec (f ◅ l)) base loop 
--- ⬝ @a Y (f x) ◅ @S1_beta_loop Y (f x) (f ◅ l) 
--- = f ◅ @n S1 X (S1_rec l) base loop 
--- ⬝ f ◅ (@a X x ◅ @S1_beta_loop X x l) 
--- ⬝ @n X Y f x l:=
--- begin
--- --note z0 := (@a S1 base loop).2.1 X Y f x l,
--- note z1 := @n S1 Y (S1_rec (f ◅ l)) base loop,
--- note z2 := @a Y (f x) ◅ @S1_beta_loop Y (f x) (f ◅ l),
--- note z3 := f ◅ @n S1 X (S1_rec l) base loop,
--- note z4 := f ◅ (@a X x ◅ @S1_beta_loop X x l),
--- note z5 := @n X Y f x l,
--- unfold S1_rec at *,
--- end
+definition S1_η {X : UGpd} (f : S1 → X) : S1_rec (Ω' f L) = f 
+  := ↑(S1_com_con f L) ⬝ compose f ◅ S1_weak_η
+  
