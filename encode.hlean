@@ -326,39 +326,40 @@ definition Ωc {A B C : Type} {f : A → B} {g : B → C} (l : Ω A)
   : Ω'(g ∘ f) l = Ω' g (Ω' f l)
   := begin induction l, fapply sigma_eq, reflexivity, apply po_of_eq, 
      apply ap_compose end
+
+-- first projection out of the loopspace is a natural transformation
 definition pi_nat {A B : Type} (f : A → B) (l : Ω A) 
   : (Ω' f l).1 = f l.1
   := begin induction l, reflexivity end
 
-definition preS1 : UGpd := tΠ ⦃X : UGpd⦄, Ω X → X
+-- pre-encoding, naturality, coherences, S1
+definition preS1 : UGpd := tΠ {X : UGpd}, Ω X → X
 definition nS1 (α : preS1) : USet 
-  := tΠ ⦃X Y : UGpd⦄ (f:X→Y) (l:Ω X), α (Ω' f l) == f (α l)
+  := tΠ {X Y : UGpd} (f:X→Y) (l:Ω X), α (Ω' f l) == f (α l)
+definition cS1id {α : preS1} (θ : nS1 @α) : UPrp
+  := tΠ {X : UGpd} (l : Ω X), θ id l =⟨-1⟩ @α X ◅ Ωi l
+definition cS1comp {α : preS1} (θ : nS1 @α) : UPrp
+  := tΠ {X Y Z : UGpd} (f : X → Y) (g : Y → Z) (l : Ω X), 
+             θ (g ∘ f) l =⟨-1⟩ (α ◅ Ωc l) ⬝ θ g (Ω' f l) ⬝ g ◅ (θ f l)
+definition S1 : UGpd := σ(α : preS1)(θ : nS1 @α)(ι : cS1id @θ), (cS1comp @θ)
 
-definition cS1id {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ ⦃X : UGpd⦄ (l : Ω X), θ id l =⟨-1⟩ @α X ◅ Ωi l
-
-definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
-  := tΠ ⦃X Y Z : UGpd⦄ (f : X → Y) (g : Y → Z) (l : Ω X), 
-             θ (g ∘ f) l =⟨-1⟩ (@α Z ◅ Ωc l) ⬝ θ g (Ω' f l) ⬝ g ◅ (θ f l)
-
-definition S1 : UGpd := σ(α : preS1)(θ : nS1 α)(ι : cS1id θ), (cS1comp θ)
-
-definition preB   : preS1         := λ X l, l.1
-definition nB     : nS1 preB   := begin intros, induction l, constructor end
+-- base point
+definition preB   : preS1    := λ X l, l.1
+definition nB     : nS1 preB := begin intros, induction l, constructor end
 definition cidB   : cS1id nB   
   := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
 definition ccompB : cS1comp nB 
   := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
-definition B      : S1            := ⟨preB, nB, cidB, ccompB⟩
+definition B      : S1       := ⟨@preB, @nB, @cidB, @ccompB⟩
 
 definition aux1 (α β : preS1) (p : α = β) (θ : nS1 α) (ζ : nS1 β)
-  (H : Π {X Y : UGpd} (f:X→Y) (l:Ω X), 
-            θ f l ⬝ f ◅ (p ▻ X ▻ l) = p ▻ Y ▻ (Ω' f l) ⬝ ζ f l)
+  (H : Π {X Y : UGpd}(f:X→Y)(l:Ω X), θ f l ⬝ f◅(p▻X▻l) = p▻Y▻(Ω' f l) ⬝ ζ f l)
   :  θ =[p] ζ
   := begin induction p, apply po_of_eq, repeat (apply ↑; intro), refine !H⬝_, 
      exact !idp_con end
 
-definition preL : preB =          preB := ↑(λX,↑(λl,l.2))
+-- loop
+definition preL : preB =       preB := ↑(λX,↑(λl,l.2))
 definition nL   : nB   =[preL] nB 
   := begin fapply aux1, intros, induction l, krewrite idp_con, 
      repeat krewrite aux2 end
@@ -366,91 +367,63 @@ definition L    : Ω S1
   := begin fconstructor, exact B, fapply sigma_eq, exact preL, 
      fapply sigma_pathover', exact nL, apply is_prop.elimo end
 
--- why do I have to put the X?
-definition S1_rec [unfold_full] ⦃X:UGpd⦄ (l:Ω X) (a:S1) : X := a.1 X l
+-- recursor
+definition S1_rec {X:UGpd} (l:Ω X) (a:S1) : X := a.1 X l
+
 definition aux {X : UGpd} (l : Ω X) {a b : S1} (p : a = b) 
   : S1_rec l ◅ p = p..1 ▻ X ▻ l := eq.rec rfl p
+definition aux3 (α:preS1) (θ: nS1 @α) {X Y : UGpd} (f:X→Y) (l m : Ω X) (p:l=m) 
+  : f ◅ (α ◅ p) ⬝ (θ f m)⁻¹ = (θ f l)⁻¹ ⬝ @α Y ◅ (Ω' f ◅ p)
+  := begin induction p, refine _⬝ !idp_con, reflexivity end
+definition aux4 {Y : UGpd} {h k : S1 → Y} (p : h = k) (α : preS1) (θ : nS1 @α)
+  :  θ h L ⬝ p ▻ α L = α ◅ (Ω' ◅ p ▻ L) ⬝ θ k L 
+  := begin induction p, refine _⬝!idp_con⁻¹, reflexivity end
+definition aux5 {X Y : UGpd} {f g : X → Y} (p : f = g) (x : X) (l : x = x)
+  : pr₁ ◅ (Ω' ◅ p ▻ ⟨x,l⟩) = p ▻ x
+  := begin induction p, reflexivity end
+definition aux7 {X Y : UGpd} {f : X → Y} {l m: Ω X} (p : l = m)
+  : pr₁ ◅ (Ω' f ◅ p)  = !pi_nat ⬝ f ◅ (pr1 ◅ p) ⬝ !pi_nat⁻¹
+  := begin induction p, exact !con.right_inv⁻¹ end
 
+-- beta rules
 definition S1_β_B (X : UGpd) (l : Ω X) : S1_rec l B = l.1 := rfl
-
 definition S1_β_L {X : UGpd} (l : Ω X) : Ω' (S1_rec l) L = l 
   := begin fapply sigma_eq, reflexivity, apply po_of_eq, refine !aux⬝_,
      refine ((λ x, x ▻ X ▻ l) ◅ !sigma_eq_pr1)⬝_,
      refine ((λ x, x ▻ l) ◅ !aux2)⬝_, apply aux2
      end
 
+-- commuting conversion
 definition S1_com_con {X Y : UGpd} (f : X → Y) (l : Ω X)
   : S1_rec (Ω' f l) ~ f ∘ S1_rec l  := λ a, a.2.1 X Y f l
 
-definition aux3 (α : preS1) (θ : nS1 α) {X Y : UGpd} (f : X → Y)
-(l m : Ω X) (p : l = m) : 
-f ◅ (@α X ◅ p) ⬝ (θ f m)⁻¹ = (θ f l)⁻¹ ⬝ @α Y ◅ (Ω' f ◅ p)
-  := begin induction p, refine _⬝ !idp_con, reflexivity end
-
-definition aux4 {X Y : UGpd} {h k : X → Y} (p : h = k) (l : Ω X) (α : preS1) (θ : nS1 α)
-  :  θ h l ⬝ p ▻ α l = @α Y ◅ (Ω' ◅ p ▻ l) ⬝ θ k l 
-  := begin induction p, refine _⬝!idp_con⁻¹, reflexivity end
-
+-- eta rules
 set_option unifier.max_steps 30000
-
-definition aux5 {X Y : UGpd} {f g : X → Y} (p : f = g) (x : X) (l : x = x)
-  : pr₁ ◅ (Ω' ◅ p ▻ ⟨x,l⟩) = p ▻ x
-  := begin induction p, reflexivity end
-
-definition aux6 {X Y Z : UGpd} {f : X → Y} {g : Y → Z} (x : X) (l : x = x)
- : pr₁ ◅ @Ωc X Y Z f g ⟨x,l⟩ = rfl :=
-begin
-refine !sigma_eq_pr1⬝_, reflexivity
-end
-
-definition aux7 {X Y : UGpd} {f : X → Y} {l m: Ω X} (p : l = m)
-  : pr₁ ◅ (Ω' f ◅ p)  = !pi_nat ⬝ f ◅ (pr1 ◅ p) ⬝ !pi_nat⁻¹
-  := begin induction p, exact !con.right_inv⁻¹ end
-
 definition S1_weak_η : S1_rec L = id
   := begin apply ↑, intro a, induction a with α n, induction n with θ ξ,
 induction ξ with ξ ρ, fapply sigma_eq, 
-{apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
- apply ap (@α X), apply S1_β_L}, 
-fapply sigma_pathover',
-{apply aux1, 
-intros X Y f l, 
-repeat rewrite aux2, 
-repeat rewrite ap_con, 
-repeat rewrite con.assoc',
-apply flri,refine !con.assoc⬝_, 
-refine (ap (λ x,_ ⬝x) !aux3)⬝_, 
-refine !con.assoc'⬝_, 
-apply frri, apply frr, 
-refine ((λx,_⬝x)◅!ap_inv)⬝_,
-apply frr, 
-refine _⬝!con.assoc', 
-refine _⬝(ap (λx,_⬝x) (frl (ρ (S1_rec l) f L ⬝ !con.assoc))),
-refine _⬝!con.assoc', refine _⬝!con.assoc',
-refine (aux2 (S1_com_con f l) (α L))⁻¹⬝_,
-apply fll, 
-refine aux4 (↑(S1_com_con f l)) L α θ ⬝ _,
-refine _⬝!con.assoc,
-refine _⬝!con.assoc,
-apply ap (λ x, x⬝  θ (f ∘ S1_rec l) L),
-apply flr, apply flr,
-repeat rewrite -ap_con,
-apply ap (λx, @α Y ◅ x),
-apply sigma_eq2, apply is_prop.elimo, induction l with x l,
-refine !ap_con⬝_, rewrite ap_con,
-krewrite aux5, rewrite aux2,
-rewrite con.assoc, refine !idp_con⬝_, 
-krewrite aux6, 
-refine !idp_con⬝_,
-krewrite aux7,
-unfold pi_nat, refine !idp_con⬝_,
-assert H : (pr₁ ◅ S1_β_L ⟨x, l⟩) = rfl, apply sigma_eq_pr1,
-assert K : f ◅ (pr₁ ◅ S1_β_L ⟨x, l⟩) = rfl, refine  f ◅◅ H ⬝ _, reflexivity,
-refine K⬝_, krewrite sigma_eq_pr1,
-},
+{ apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
+  apply ap α, apply S1_β_L}, 
+  fapply sigma_pathover',
+{ apply aux1, intros X Y f l, 
+  repeat rewrite aux2, repeat rewrite ap_con, repeat rewrite con.assoc',
+  apply flri, refine !con.assoc⬝((ap (λ x,_ ⬝x) !aux3)⬝(!con.assoc'⬝_)), 
+  apply frri, apply frr, refine ((λx,_⬝x)◅!ap_inv)⬝_,
+  apply frr, refine _⬝(ap (λx,_⬝x)(frl(ρ(S1_rec l)f L⬝!con.assoc)))⬝!con.assoc',
+  refine (aux2 (S1_com_con f l) (α L))⁻¹⬝_⬝!con.assoc'⬝!con.assoc',
+  apply fll, refine aux4 (↑(S1_com_con f l)) @α @θ ⬝(_⬝!con.assoc⬝!con.assoc),
+  apply ap (λ x, x⬝  θ (f ∘ S1_rec l) L), apply flr, apply flr,
+  repeat rewrite -ap_con, apply ap (λx, α ◅ x),
+  apply sigma_eq2, apply is_prop.elimo, induction l with x l,
+  refine !ap_con⬝_, rewrite ap_con, krewrite aux5, rewrite aux2,
+  rewrite con.assoc, refine !idp_con⬝(concat◅!sigma_eq_pr1 ▻_⬝(!idp_con⬝_)), 
+  krewrite aux7, unfold pi_nat, refine !idp_con⬝_, refine f◅◅!sigma_eq_pr1 ⬝ _, 
+  krewrite sigma_eq_pr1},
 apply is_prop.elimo,
 end
-
-definition S1_η {X : UGpd} (f : S1 → X) : S1_rec (Ω' f L) = f 
+definition S1_η {X : UGpd} (f : S1 → X) : S1_rec (Ω' f L) = f
   := ↑(S1_com_con f L) ⬝ compose f ◅ S1_weak_η
-  
+
+-- universal property : S1 represents the unbased loopspace functor on UGpd
+definition S1_univ_prop {X : UGpd} : (S1 → X) ≃ Ω X
+  := equiv.MK (λ f, Ω' f L) S1_rec S1_β_L S1_η
