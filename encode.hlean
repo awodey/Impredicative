@@ -208,7 +208,7 @@ definition Product_classical_η {A B : USet} (p : Product A B)
         
 -- universal property
 definition Product_univ_prop {A B C : USet} : is_equiv (@Product_rec A B C)
-  := adjointify Product_rec 
+  := adjointify Product_rec
                 (λ f a b, f (Pair a b))
                 Product_η
                 (λ g, eq_of_homotopy2 (Product_β g))
@@ -333,15 +333,15 @@ definition pi_nat {A B : Type} (f : A → B) (l : Ω A)
   := begin induction l, reflexivity end
 
 -- pre-encoding, naturality, coherences, S1
-definition preS1 : UGpd := tΠ {X : UGpd}, Ω X → X
+definition preS1 : UGpd := tΠ ⦃X : UGpd⦄, Ω X → X
 definition nS1 (α : preS1) : USet 
-  := tΠ {X Y : UGpd} (f:X→Y) (l:Ω X), α (Ω' f l) == f (α l)
-definition cS1id {α : preS1} (θ : nS1 @α) : UPrp
-  := tΠ {X : UGpd} (l : Ω X), θ id l =⟨-1⟩ @α X ◅ Ωi l
-definition cS1comp {α : preS1} (θ : nS1 @α) : UPrp
-  := tΠ {X Y Z : UGpd} (f : X → Y) (g : Y → Z) (l : Ω X), 
-             θ (g ∘ f) l =⟨-1⟩ (α ◅ Ωc l) ⬝ θ g (Ω' f l) ⬝ g ◅ (θ f l)
-definition S1 : UGpd := σ(α : preS1)(θ : nS1 @α)(ι : cS1id @θ), (cS1comp @θ)
+  := tΠ ⦃X Y : UGpd⦄ (f:X→Y) (l:Ω X), α (Ω' f l) == f (α l)
+definition cS1id {α : preS1} (θ : nS1 α) : UPrp
+  := tΠ ⦃X : UGpd⦄ (l : Ω X), θ id l =⟨-1⟩ !α ◅ Ωi l
+definition cS1comp {α : preS1} (θ : nS1 α) : UPrp
+  := tΠ ⦃X Y Z : UGpd⦄ (f : X → Y) (g : Y → Z) (l : Ω X), 
+             θ (g ∘ f) l == (!α ◅ Ωc l) ⬝ θ g (Ω' f l) ⬝ g ◅ (θ f l)
+definition S1 : UGpd := σ(α : preS1)(θ : nS1 α)(ι : cS1id θ), (cS1comp θ)
 
 -- base point
 definition preB   : preS1    := λ X l, l.1
@@ -350,7 +350,7 @@ definition cidB   : cS1id nB
   := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
 definition ccompB : cS1comp nB 
   := begin intros, induction l, refine _⬝!sigma_eq_pr1⁻¹, reflexivity end
-definition B      : S1       := ⟨@preB, @nB, @cidB, @ccompB⟩
+definition B      : S1       := ⟨preB, nB, cidB, ccompB⟩
 
 definition aux1 (α β : preS1) (p : α = β) (θ : nS1 α) (ζ : nS1 β)
   (H : Π {X Y : UGpd}(f:X→Y)(l:Ω X), θ f l ⬝ f◅(p▻X▻l) = p▻Y▻(Ω' f l) ⬝ ζ f l)
@@ -372,11 +372,11 @@ definition S1_rec {X:UGpd} (l:Ω X) (a:S1) : X := a.1 X l
 
 definition aux {X : UGpd} (l : Ω X) {a b : S1} (p : a = b) 
   : S1_rec l ◅ p = p..1 ▻ X ▻ l := eq.rec rfl p
-definition aux3 (α:preS1) (θ: nS1 @α) {X Y : UGpd} (f:X→Y) (l m : Ω X) (p:l=m) 
-  : f ◅ (α ◅ p) ⬝ (θ f m)⁻¹ = (θ f l)⁻¹ ⬝ @α Y ◅ (Ω' f ◅ p)
+definition aux3 (α:preS1) (θ: nS1 α) {X Y : UGpd} (f:X→Y) (l m : Ω X) (p:l=m) 
+  : f ◅ (!α ◅ p) ⬝ (θ f m)⁻¹ = (θ f l)⁻¹ ⬝ !α ◅ (Ω' f ◅ p)
   := begin induction p, refine _⬝ !idp_con, reflexivity end
-definition aux4 {Y : UGpd} {h k : S1 → Y} (p : h = k) (α : preS1) (θ : nS1 @α)
-  :  θ h L ⬝ p ▻ α L = α ◅ (Ω' ◅ p ▻ L) ⬝ θ k L 
+definition aux4 {Y : UGpd} {h k : S1 → Y} (p : h = k) (α : preS1) (θ : nS1 α)
+  :  θ h L ⬝ p ▻ α L = !α ◅ (Ω' ◅ p ▻ L) ⬝ θ k L 
   := begin induction p, refine _⬝!idp_con⁻¹, reflexivity end
 definition aux5 {X Y : UGpd} {f g : X → Y} (p : f = g) (x : X) (l : x = x)
   : pr₁ ◅ (Ω' ◅ p ▻ ⟨x,l⟩) = p ▻ x
@@ -403,7 +403,7 @@ definition S1_weak_η : S1_rec L = id
   := begin apply ↑, intro a, induction a with α n, induction n with θ ξ,
 induction ξ with ξ ρ, fapply sigma_eq, 
 { apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
-  apply ap α, apply S1_β_L}, 
+  apply ap !α, apply S1_β_L}, 
   fapply sigma_pathover',
 { apply aux1, intros X Y f l, 
   repeat rewrite aux2, repeat rewrite ap_con, repeat rewrite con.assoc',
@@ -411,9 +411,9 @@ induction ξ with ξ ρ, fapply sigma_eq,
   apply frri, apply frr, refine ((λx,_⬝x)◅!ap_inv)⬝_,
   apply frr, refine _⬝(ap (λx,_⬝x)(frl(ρ(S1_rec l)f L⬝!con.assoc)))⬝!con.assoc',
   refine (aux2 (S1_com_con f l) (α L))⁻¹⬝_⬝!con.assoc'⬝!con.assoc',
-  apply fll, refine aux4 (↑(S1_com_con f l)) @α @θ ⬝(_⬝!con.assoc⬝!con.assoc),
+  apply fll, refine aux4 (↑(S1_com_con f l)) α θ ⬝(_⬝!con.assoc⬝!con.assoc),
   apply ap (λ x, x⬝  θ (f ∘ S1_rec l) L), apply flr, apply flr,
-  repeat rewrite -ap_con, apply ap (λx, α ◅ x),
+  repeat rewrite -ap_con, apply ap (λx, !α ◅ x),
   apply sigma_eq2, apply is_prop.elimo, induction l with x l,
   refine !ap_con⬝_, rewrite ap_con, krewrite aux5, rewrite aux2,
   rewrite con.assoc, refine !idp_con⬝(concat◅!sigma_eq_pr1 ▻_⬝(!idp_con⬝_)), 
