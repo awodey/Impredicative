@@ -1,5 +1,6 @@
 -- Impredicative encodings of (higher) inductive types
 -- formalization by Steve Awodey and Jonas Frey
+-- accompanies LICS 2018 paper by Awodey, Frey, and Sam Speight
 
 import imp_prop_trunc .helpers
 
