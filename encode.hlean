@@ -154,7 +154,7 @@ definition η_is_equiv (A : USet) : is_equiv (@η A)
            {λ x, rfl}
      end
 
-/- SetEncode is 1-truncation -/
+/- SetEncode is 0-truncation -/
 
 definition h1 {A : U} {B : USet} (f : SetEncode A → B) : A → B := f ∘ η
 
