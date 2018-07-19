@@ -126,18 +126,18 @@ definition prop_trunc_univ_prop {A : U} {P : UPrp}
 /- Encoding of a set -/
 
 -- System F style encoding
-definition preSetEncode (A : USet) : USet := 
+definition preSetEncode (A : U) : USet := 
   tΠ ⦃X : USet⦄,  (A ⇒ X) ⇒ X
 
 -- naturality condition
-definition nSetEncode {A : USet} (α : preSetEncode A) : UPrp 
+definition nSetEncode {A : U} (α : preSetEncode A) : UPrp 
   :=  tΠ (X Y : USet) (f : X → Y) (h : A → X), α (f ∘ h) == f (α h)
 
 --refined encoding
-definition  SetEncode (A : USet) : USet := σ(α : preSetEncode A), nSetEncode α
+definition  SetEncode (A : U) : USet := σ(α : preSetEncode A), nSetEncode α
 
 -- constructor
-definition η {A : USet} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
+definition η {A : U} (a : A) : SetEncode A := ⟨λ X f, f a, λ X Y f h, rfl⟩
 
 /- The "Basic Lemma" -/
 
@@ -152,6 +152,22 @@ definition η_is_equiv (A : USet) : is_equiv (@η A)
            apply is_prop.elimo},
            {λ x, rfl}
      end
+
+/- SetEncode is 1-truncation -/
+
+definition h1 {A : U} {B : USet} (f : SetEncode A → B) : A → B := f ∘ η
+
+definition h2 {A : U} {B : USet} (f : A → B) : SetEncode A → B := λ φ, φ.1 B f
+
+definition e1 {A : U} {B : USet} (f : A → B) : h1 (h2 f) = f   := ↑(λ a, rfl)
+
+definition e2 {A : U} {B : USet} (g : SetEncode A → B) : h2 (h1 g) = g
+  := begin apply ↑, intro φ, induction φ with φ ν, refine !ν⬝_, apply ap g, 
+     fapply sigma_eq, apply eq_of_homotopy2, intro S f, refine _⬝ap (@φ _) !e1,
+     apply symm, refine !ν⬝_, reflexivity, apply is_prop.elimo end
+
+definition settrunc_univ_prop (A : U) (B : USet) : (SetEncode A → B) ≃ (A → B)
+  := equiv.MK h1 h2 e1 e2
 
 /- Product A × B of sets -/
 
@@ -401,26 +417,30 @@ definition S1_com_con {X Y : UGpd} (f : X → Y) (l : Ω X)
 set_option unifier.max_steps 30000
 definition S1_weak_η : S1_rec L = id
   := begin apply ↑, intro a, induction a with α n, induction n with θ ξ,
-induction ξ with ξ ρ, fapply sigma_eq, 
-{ apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
-  apply ap !α, apply S1_β_L}, 
-  fapply sigma_pathover',
-{ apply aux1, intros X Y f l, 
-  repeat rewrite aux2, repeat rewrite ap_con, repeat rewrite con.assoc',
-  apply flri, refine !con.assoc⬝((ap (λ x,_ ⬝x) !aux3)⬝(!con.assoc'⬝_)), 
-  apply frri, apply frr, refine ((λx,_⬝x)◅!ap_inv)⬝_,
-  apply frr, refine _⬝(ap (λx,_⬝x)(frl(ρ(S1_rec l)f L⬝!con.assoc)))⬝!con.assoc',
-  refine (aux2 (S1_com_con f l) (α L))⁻¹⬝_⬝!con.assoc'⬝!con.assoc',
-  apply fll, refine aux4 (↑(S1_com_con f l)) α θ ⬝(_⬝!con.assoc⬝!con.assoc),
-  apply ap (λ x, x⬝  θ (f ∘ S1_rec l) L), apply flr, apply flr,
-  repeat rewrite -ap_con, apply ap (λx, !α ◅ x),
-  apply sigma_eq2, apply is_prop.elimo, induction l with x l,
-  refine !ap_con⬝_, rewrite ap_con, krewrite aux5, rewrite aux2,
-  rewrite con.assoc, refine !idp_con⬝(concat◅!sigma_eq_pr1 ▻_⬝(!idp_con⬝_)), 
-  krewrite aux7, unfold pi_nat, refine !idp_con⬝_, refine f◅◅!sigma_eq_pr1 ⬝ _, 
-  krewrite sigma_eq_pr1},
-apply is_prop.elimo,
-end
+     induction ξ with ξ ρ, fapply sigma_eq, 
+     { apply ↑, intro X, apply ↑, intro l, refine (θ (S1_rec l) L)⁻¹ ⬝ _,
+       apply ap !α, apply S1_β_L
+     }, 
+     fapply sigma_pathover',
+     { apply aux1, intros X Y f l, 
+       repeat rewrite aux2, repeat rewrite ap_con, repeat rewrite con.assoc',
+       refine flri $ !con.assoc⬝((ap (λ x,_ ⬝x) !aux3)⬝(!con.assoc'⬝_)), 
+       refine frri $ frr $ (concat _ ◅ !ap_inv) ⬝ frr _, 
+       refine _⬝concat _ ◅ (frl(ρ(S1_rec l)f L⬝!con.assoc))⬝!con.assoc',
+       refine (aux2 (S1_com_con _ _) (α L))⁻¹⬝_⬝!con.assoc'⬝!con.assoc',
+       refine fll $ aux4 (↑(S1_com_con f l)) α θ ⬝(_⬝!con.assoc⬝!con.assoc),
+       refine ap (λ x, x⬝!θ) $ flr $ flr _,
+       repeat rewrite -ap_con, 
+       apply ap (λx, !α ◅ x), apply sigma_eq2, apply is_prop.elimo, 
+       induction l with x l,
+       refine !ap_con⬝_, 
+       rewrite ap_con, krewrite aux5, rewrite aux2, rewrite con.assoc, 
+       refine !idp_con⬝(concat◅!sigma_eq_pr1 ▻_⬝(!idp_con⬝_)), 
+       krewrite aux7, unfold pi_nat, refine !idp_con⬝_, 
+       refine f◅◅!sigma_eq_pr1⬝_, krewrite sigma_eq_pr1
+     },
+     apply is_prop.elimo,
+     end
 definition S1_η {X : UGpd} (f : S1 → X) : S1_rec (Ω' f L) = f
   := ↑(S1_com_con f L) ⬝ compose f ◅ S1_weak_η
 
